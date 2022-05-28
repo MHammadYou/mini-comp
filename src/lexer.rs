@@ -20,5 +20,11 @@ pub enum TokenType {
     Operations(String),
     Identifier(String),
     Char(char),
-    Numeric{ raw: String, base: NumericBaseKind, postfix: NumberPostfixKind, form: NumericForm }
+    Numeric(String)
+}
+
+pub enum PunctuationKind {
+    Open(usize),
+    Close(usize),
+    Separator,
 }
