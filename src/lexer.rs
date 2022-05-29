@@ -28,3 +28,13 @@ pub enum PunctuationKind {
     Close(usize),
     Separator,
 }
+
+pub struct Lexer {
+    pub cur_line: usize,
+    pub cur_col: usize,
+
+    pub codepoint_offset: usize,
+
+    chars: std::iter::Peekable<std::str::Chars<'a>>,
+    
+}
