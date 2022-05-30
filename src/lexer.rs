@@ -36,5 +36,5 @@ pub struct Lexer {
     pub codepoint_offset: usize,
 
     chars: std::iter::Peekable<std::str::Chars<'a>>,
-    
+
 }
