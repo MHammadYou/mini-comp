@@ -29,7 +29,7 @@ pub enum PunctuationKind {
     Separator,
 }
 
-pub struct Lexer {
+pub struct Lexer<'a> {
     pub cur_line: usize,
     pub cur_col: usize,
 
