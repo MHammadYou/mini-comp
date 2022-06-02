@@ -7,7 +7,7 @@ use std::io;
 
 #[derive(Error, Debug)]
 pub enum LexerError {
-    #[error("")]
+    #[error("Some IO Error")]
     FileIO(#[from] io::Error),
 
     #[error("Expected ??, found ??")]
