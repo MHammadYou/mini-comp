@@ -44,3 +44,15 @@ pub struct Lexer<'a> {
     pub codepoint_offset: usize,
     chars: std::iter::Peekable<std::str::Chars<'a>>,
 }
+
+
+impl<'a> Lexer<'a> {
+    pub fn new(chars: &'a str) -> Lexer<'a> {
+        Lexer {
+            cur_line: 1,
+            cur_col: 1,
+            codepoint_offset: 0,
+            chars: chars.chars().peekable()
+        }
+    }
+}
