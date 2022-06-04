@@ -4,6 +4,8 @@ extern crate thiserror;
 use thiserror::Error;
 
 use std::io;
+use lexer::TokenType::Punctuation;
+use std::option::Option::Some;
 
 #[derive(Error, Debug)]
 pub enum LexerError {
@@ -32,10 +34,12 @@ pub enum TokenType {
 
 #[derive(Debug)]
 pub enum PunctuationKind {
-    Open(usize),
-    Close(usize),
+    Open(BalancingDepthType),
+    Close(BalancingDepthType),
     Separator,
 }
+
+type BalancingDepthType = i32;
 
 pub struct Lexer<'a> {
     pub cur_line: usize,
@@ -43,6 +47,9 @@ pub struct Lexer<'a> {
 
     pub codepoint_offset: usize,
     chars: std::iter::Peekable<std::str::Chars<'a>>,
+
+    balancing_state: std::collections::HashMap<char, i32>,
+    BalancingDepthType,
 }
 
 
@@ -52,7 +59,27 @@ impl<'a> Lexer<'a> {
             cur_line: 1,
             cur_col: 1,
             codepoint_offset: 0,
-            chars: chars.chars().peekable()
+            chars: chars.chars().peekable(),
+            balancing_state: std::collections::HashMap::new(),
+        }
+    }
+
+    fn push_balance(&mut self, c: &char) -> BalancingDepthType {
+        if let Some(v) = self.balancing_state.get_mut(&c) {
+            *v += 1;
+            *v
+        } else {
+            self.balancing_state.insert(*c, 0);
+            0
+        }
+    }
+
+    fn transform_to_type(&mut self, c: char) -> Option<TokenType> {
+        match c {
+            '(' => Some(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_balance(&c)) }),
+            ')' => Some(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.push_balance(&c)) }),
+
+            _ => {}
         }
     }
 }
