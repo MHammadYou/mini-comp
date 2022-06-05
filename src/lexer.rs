@@ -4,8 +4,6 @@ extern crate thiserror;
 use thiserror::Error;
 
 use std::io;
-use lexer::TokenType::Punctuation;
-use std::option::Option::Some;
 
 #[derive(Error, Debug)]
 pub enum LexerError {
@@ -16,7 +14,17 @@ pub enum LexerError {
     MissingExpectedSymbol {
         expected: TokenType,
         found: Token
-    }
+    },
+    
+    #[error("Can't find opening symbol for {symbol:?}")]
+    MissingBalancedSymbol {
+        symbol: String,
+    },
+
+    #[error("Unrecognized symbol")]
+    UnknownSymbol {
+      symbol: String
+    },
 }
 
 pub type Token = TokenType;
@@ -29,7 +37,6 @@ pub enum TokenType {
     Identifier(String),
     Char(char),
     Numeric(String),
-    Unknown(char)
 }
 
 #[derive(Debug)]
@@ -47,9 +54,7 @@ pub struct Lexer<'a> {
 
     pub codepoint_offset: usize,
     chars: std::iter::Peekable<std::str::Chars<'a>>,
-
-    balancing_state: std::collections::HashMap<char, i32>,
-    BalancingDepthType,
+    balancing_state: std::collections::HashMap<char, BalancingDepthType>,
 }
 
 
@@ -64,7 +69,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn push_balance(&mut self, c: &char) -> BalancingDepthType {
+    fn push_symbol(&mut self, c: &char) -> BalancingDepthType {
         if let Some(v) = self.balancing_state.get_mut(&c) {
             *v += 1;
             *v
@@ -73,13 +78,25 @@ impl<'a> Lexer<'a> {
             0
         }
     }
+    
+    fn pop_symbol(&mut self, c: &char) -> Result<BalancingDepthType, LexerError> {
+        if let Some(v) = self.balancing_state.get_mut(&c) {
+            if *v == 1 {
+                *v -= 1;
+                Ok(*v)
+            } else {
+                Err(LexerError::MissingBalancedSymbol { symbol: String::from(*c) })
+            }
+        } else {
+            Err(LexerError::MissingBalancedSymbol { symbol: String::from(*c) })
+        }
+    }
 
-    fn transform_to_type(&mut self, c: char) -> Option<TokenType> {
+    fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
         match c {
-            '(' => Some(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_balance(&c)) }),
-            ')' => Some(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.push_balance(&c)) }),
-
-            _ => {}
+            '(' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_symbol(&c)) }),
+            ')' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?) }),
+            _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
     }
 }
