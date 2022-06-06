@@ -99,4 +99,21 @@ impl<'a> Lexer<'a> {
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
     }
+
+    pub fn consume(&mut self) {
+        // I'll get back to it
+    }
+
+    fn skip_whitespace(&mut self) {
+        while let Some(c) = self.chars.peek() {
+            if !c.is_whitespace() {
+                break;
+            }
+            self.consume();
+        }
+    }
+
+    pub fn next_token(&mut self) -> Result<TokenType, LexerError> {
+
+    }
 }
