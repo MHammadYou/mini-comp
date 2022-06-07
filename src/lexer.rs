@@ -100,8 +100,19 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    pub fn consume(&mut self) {
-        // I'll get back to it
+    pub fn consume(&mut self) -> Option<char> {
+        match self.chars.next() {
+            Some(c) => {
+                self.cur_col += 1;
+                if c == '\n' {
+                    self.cur_line += 1;
+                    self.cur_col += 1;
+                }
+                self.codepoint_offset += 1;
+                Some(c)
+            },
+            None => None
+        }
     }
 
     fn skip_whitespace(&mut self) {
