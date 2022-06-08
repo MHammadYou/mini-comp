@@ -94,8 +94,12 @@ impl<'a> Lexer<'a> {
 
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
         match c {
-            '(' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_symbol(&c)) }),
-            ')' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?) }),
+            '(' => Ok(TokenType::Punctuation {
+                raw: c, kind: PunctuationKind::Open(self.push_symbol(&c))
+            }),
+            ')' => Ok(TokenType::Punctuation {
+                raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?)
+            }),
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
     }
