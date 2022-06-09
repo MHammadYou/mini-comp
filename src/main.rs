@@ -1,6 +1,6 @@
 pub mod lexer;
 
-use lexer::*;
+// use lexer::*;
 
 fn main() {
 
