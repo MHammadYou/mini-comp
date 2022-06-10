@@ -128,7 +128,13 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    // pub fn next_token(&mut self) -> Result<TokenType, LexerError> {
-    //
-    // }
+    pub fn next_token(&mut self) -> Result<TokenType, LexerError> {
+        self.skip_whitespace();
+
+        if let Some(c) = self.consume() {
+            self.transform_to_type(c)
+        } else {
+            Ok(TokenType::EOF)
+        }
+    }
 }
