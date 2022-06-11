@@ -29,6 +29,11 @@ pub enum LexerError {
 
 pub type Token = TokenType;
 
+pub struct Punctuation {
+    pub raw: char,
+    pub kind: PunctuationKind
+}
+
 #[derive(Debug)]
 pub enum TokenType {
     EOF,
