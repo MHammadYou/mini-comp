@@ -86,7 +86,7 @@ impl<'a> Lexer<'a> {
     
     fn pop_symbol(&mut self, c: &char) -> Result<BalancingDepthType, LexerError> {
         if let Some(v) = self.balancing_state.get_mut(&c) {
-            if *v == 1 {
+            if *v >= 1 {
                 *v -= 1;
                 Ok(*v)
             } else {
