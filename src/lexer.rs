@@ -74,6 +74,19 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    fn map_balance(c: &char) -> char {
+        match c {
+            '(' => ')',
+            ')' => '(',
+            '{' => '}',
+            '}' => '{',
+            '[' => ']',
+            ']' => '[',
+
+            _ => panic!("Invalid c")
+        }
+    }
+
     fn push_symbol(&mut self, c: &char) -> BalancingDepthType {
         if let Some(v) = self.balancing_state.get_mut(&c) {
             *v += 1;
@@ -85,7 +98,8 @@ impl<'a> Lexer<'a> {
     }
     
     fn pop_symbol(&mut self, c: &char) -> Result<BalancingDepthType, LexerError> {
-        if let Some(v) = self.balancing_state.get_mut(&c) {
+
+        if let Some(v) = self.balancing_state.get_mut(&Lexer::map_balance(&c)) {
             if *v >= 1 {
                 *v -= 1;
                 Ok(*v)
@@ -93,6 +107,7 @@ impl<'a> Lexer<'a> {
                 Err(LexerError::MissingBalancedSymbol { symbol: String::from(*c) })
             }
         } else {
+            println!("Hit");
             Err(LexerError::MissingBalancedSymbol { symbol: String::from(*c) })
         }
     }
