@@ -18,7 +18,8 @@ pub enum LexerError {
     
     #[error("Can't find opening symbol for {symbol:?}")]
     MissingBalancedSymbol {
-        symbol: String,
+        symbol: char,
+        open: char
     },
 
     #[error("Unrecognized symbol")]
@@ -89,7 +90,7 @@ impl<'a> Lexer<'a> {
     fn push_symbol(&mut self, c: &char) -> BalancingDepthType {
         if let Some(v) = self.balancing_state.get_mut(&c) {
             *v += 1;
-            *v
+            *v - 1
         } else {
             self.balancing_state.insert(*c, 0);
             0
@@ -103,11 +104,10 @@ impl<'a> Lexer<'a> {
                 *v -= 1;
                 Ok(*v)
             } else {
-                Err(LexerError::MissingBalancedSymbol { symbol: String::from(*c) })
+                Err(LexerError::MissingBalancedSymbol { symbol: *c, open: Lexer::map_balance(&c) })
             }
         } else {
-            println!("Hit");
-            Err(LexerError::MissingBalancedSymbol { symbol: String::from(*c) })
+            Err(LexerError::MissingBalancedSymbol { symbol: *c, open: Lexer::map_balance(&c) })
         }
     }
 
