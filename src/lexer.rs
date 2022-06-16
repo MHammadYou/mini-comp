@@ -83,7 +83,7 @@ impl<'a> Lexer<'a> {
             '}' => '{',
             '[' => ']',
             ']' => '[',
-            _ => panic!("Invalid c")
+            _ => panic!("Invalid symbol")
         }
     }
 
@@ -92,13 +92,12 @@ impl<'a> Lexer<'a> {
             *v += 1;
             *v - 1
         } else {
-            self.balancing_state.insert(*c, 0);
+            self.balancing_state.insert(*c, 1);
             0
         }
     }
     
     fn pop_symbol(&mut self, c: &char) -> Result<BalancingDepthType, LexerError> {
-
         if let Some(v) = self.balancing_state.get_mut(&Lexer::map_balance(&c)) {
             if *v >= 1 {
                 *v -= 1;
@@ -117,6 +116,18 @@ impl<'a> Lexer<'a> {
                 raw: c, kind: PunctuationKind::Open(self.push_symbol(&c))
             }),
             ')' => Ok(TokenType::Punctuation {
+                raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?)
+            }),
+            '{' => Ok(TokenType::Punctuation {
+                raw: c, kind: PunctuationKind::Open(self.push_symbol(&c))
+            }),
+            '}' => Ok(TokenType::Punctuation {
+                raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?)
+            }),
+            '[' => Ok(TokenType::Punctuation {
+                raw: c, kind: PunctuationKind::Open(self.push_symbol(&c))
+            }),
+            ']' => Ok(TokenType::Punctuation {
                 raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?)
             }),
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
