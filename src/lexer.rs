@@ -111,7 +111,10 @@ impl<'a> Lexer<'a> {
     }
 
     fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
+        let mut seen_dot = false;
+        let mut seen_exp = false;
 
+        
     }
 
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
@@ -119,7 +122,7 @@ impl<'a> Lexer<'a> {
             '(' | '[' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_symbol(&c)) }),
             ')' | ']' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?) }),
             '0' ..= '9' => self.parse_numbers(c),
-            
+
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
     }
