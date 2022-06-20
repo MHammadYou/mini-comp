@@ -114,7 +114,18 @@ impl<'a> Lexer<'a> {
         let mut seen_dot = false;
         let mut seen_exp = false;
 
-        
+        if start == '.' {
+            seen_dot = true;
+        }
+
+        loop {
+            match self.chars.peek() {
+                
+            }
+        }
+
+        Ok(TokenType::EOF)
+
     }
 
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
