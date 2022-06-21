@@ -118,11 +118,11 @@ impl<'a> Lexer<'a> {
             seen_dot = true;
         }
 
-        loop {
-            match self.chars.peek() {
-                
-            }
-        }
+        // loop {
+        //     match self.chars.peek() {
+        //
+        //     }
+        // }
 
         Ok(TokenType::EOF)
 
