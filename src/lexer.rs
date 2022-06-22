@@ -36,6 +36,13 @@ pub struct Punctuation {
 }
 
 #[derive(Debug)]
+pub enum NumericHint {
+    Integer,
+    FloatingPoint
+}
+
+
+#[derive(Debug)]
 pub enum TokenType {
     EOF,
     Punctuation { raw: char, kind: PunctuationKind},
