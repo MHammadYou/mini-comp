@@ -35,7 +35,7 @@ pub struct Punctuation {
     pub kind: PunctuationKind
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug)]
 pub enum NumericHint {
     Integer,
     FloatingPoint
