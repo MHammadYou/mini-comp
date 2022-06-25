@@ -10,7 +10,7 @@ pub enum LexerError {
     #[error("Some IO Error")]
     FileIO(#[from] io::Error),
 
-    #[error("Expected ??, found ??")]
+    #[error("Expected {expected:?}, found {found:?}")]
     MissingExpectedSymbol {
         expected: TokenType,
         found: Token
