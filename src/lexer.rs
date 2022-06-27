@@ -120,7 +120,8 @@ impl<'a> Lexer<'a> {
     fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
         let mut seen_dot = false;
         let mut seen_exp = false;
-        let mut 
+        let mut num = start.to_string();
+        let radix = 10;
 
         if start == '.' {
             seen_dot = true;
@@ -128,9 +129,11 @@ impl<'a> Lexer<'a> {
 
         loop {
             match self.chars.peek() {
-
                 Some(c) if *c == '.' && !seen_dot => {
 
+                },
+                Some(c) if c.is_digit(radix) => {
+                      
                 },
                 _ => Err(LexerError::UnknownSymbol {symbol: c})
             }
