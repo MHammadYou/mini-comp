@@ -22,6 +22,11 @@ pub enum LexerError {
         open: char
     },
 
+    #[error("Can't create numeric literal due to invalid character {raw:?}")]
+    NumericLiteralInvalidChar {
+        raw: String,
+    },
+
     #[error("Unrecognized symbol")]
     UnknownSymbol {
       symbol: String
@@ -49,7 +54,7 @@ pub enum TokenType {
     Operations(String),
     Identifier(String),
     Char(char),
-    Numeric(String),
+    Numeric{ raw: String, hint: NumericHint },
 }
 
 #[derive(Debug)]
@@ -133,14 +138,14 @@ impl<'a> Lexer<'a> {
 
                 },
                 Some(c) if c.is_digit(radix) => {
-                      
+
+                },
+                Some(c) if !c.is_ascii_alphabetic() || c.is_digit(10) => {
+                    return Err(LexerError::NumericLiteralInvalidChar { raw: num + &c.to_string() });
                 },
                 _ => Err(LexerError::UnknownSymbol {symbol: c})
             }
         }
-
-        Ok()
-
     }
 
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
