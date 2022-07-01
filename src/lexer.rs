@@ -143,7 +143,7 @@ impl<'a> Lexer<'a> {
                 Some(c) if !c.is_ascii_alphabetic() || c.is_digit(10) => {
                     return Err(LexerError::NumericLiteralInvalidChar { raw: num + &c.to_string() });
                 },
-                // _ => Err(LexerError::UnknownSymbol {symbol: c})
+                _ => Err(LexerError::UnknownSymbol {symbol: c})
             }
         }
     }
