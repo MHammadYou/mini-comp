@@ -1,1 +1,3 @@
-A mini compiler in rust
+## Mini Comp
+
+A mini-compiler in rust
