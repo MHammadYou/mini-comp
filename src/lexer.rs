@@ -123,8 +123,8 @@ impl<'a> Lexer<'a> {
     }
 
     fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
-        let mut seen_dot: bool;
-        let mut seen_exp: bool;
+        let mut seen_dot = false;
+        let mut seen_exp = false;
         let mut num = start.to_string();
         let radix = 10;
 
