@@ -138,7 +138,7 @@ impl<'a> Lexer<'a> {
 
                 },
                 Some(c) if c.is_digit(radix) => {
-
+                    num.push(*c);
                 },
                 Some(c) if !c.is_ascii_alphabetic() || c.is_digit(10) => {
                     return Err(LexerError::NumericLiteralInvalidChar { raw: num + &c.to_string() });
