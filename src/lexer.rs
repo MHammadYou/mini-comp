@@ -124,7 +124,6 @@ impl<'a> Lexer<'a> {
 
     fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
         let mut seen_dot = false;
-        let mut seen_exp = false;
         let mut num = start.to_string();
         let radix = 10;
 
@@ -135,15 +134,19 @@ impl<'a> Lexer<'a> {
         loop {
             match self.chars.peek() {
                 Some(c) if *c == '.' && !seen_dot => {
-
+                    num.push(*c);
+                    self.consume_char();
+                    seen_dot = true;
                 },
                 Some(c) if c.is_digit(radix) => {
                     num.push(*c);
+                    self.consume_char();
                 },
                 Some(c) if !c.is_ascii_alphabetic() || c.is_digit(10) => {
-                    return Err(LexerError::NumericLiteralInvalidChar { raw: num + &c.to_string() });
+                    num.push(*c);
+                    return Err(LexerError::NumericLiteralInvalidChar { raw: num });
                 },
-                _ => Err(LexerError::UnknownSymbol {symbol: c})
+                _ => break Ok(TokenType::Numeric { raw: num, hint: if seen_dot { NumericHint::FloatingPoint } else { NumericHint::Integer } })
             }
         }
     }
