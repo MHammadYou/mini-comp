@@ -156,7 +156,6 @@ impl<'a> Lexer<'a> {
             '(' | '[' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_symbol(&c)) }),
             ')' | ']' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?) }),
             '0' ..= '9' | '.' => self.parse_numbers(c),
-
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
     }
