@@ -135,12 +135,12 @@ impl<'a> Lexer<'a> {
             match self.chars.peek() {
                 Some(c) if *c == '.' && !seen_dot => {
                     num.push(*c);
-                    self.consume_char();
+                    self.consume();
                     seen_dot = true;
                 },
                 Some(c) if c.is_digit(radix) => {
                     num.push(*c);
-                    self.consume_char();
+                    self.consume();
                 },
                 Some(c) if !c.is_ascii_alphabetic() || c.is_digit(10) => {
                     num.push(*c);
