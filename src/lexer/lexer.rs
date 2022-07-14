@@ -1,4 +1,5 @@
-use lexer::*;
+use crate::lexer::*;
+
 
 pub struct Lexer<'a> {
     pub cur_line: usize,
@@ -36,8 +37,10 @@ impl<'a> Lexer<'a> {
     fn push_symbol(&mut self, c: &char) -> BalancingDepthType {
         if let Some(v) = self.balancing_state.get_mut(&c) {
             *v += 1;
+            println!("Another one");
             *v - 1
         } else {
+            println!("starting curly brace");
             self.balancing_state.insert(*c, 1);
             0
         }

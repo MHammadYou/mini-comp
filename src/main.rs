@@ -2,10 +2,11 @@ pub mod lexer;
 pub mod parser;
 
 use lexer::*;
+use lexer::lexer::Lexer;
 
 
 fn main() {
-    let mut lexer = Lexer::new("(2.2 2 3)");
+    let mut lexer = Lexer::new(")");
 
     loop {
         match lexer.next_token() {
