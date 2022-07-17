@@ -12,7 +12,7 @@ pub struct Lexer<'a> {
 
 macro_rules! try_consume {
     ($self: tt, $($inner:tt),*) => {
-        if let Some(c) = $self.chars.peak() {
+        if let Some(c) = $self.chars.peek() {
             if try_consume!(impl c, $($inner), *) {
                 let tmp = *c;
                 $self.consume();
@@ -79,31 +79,91 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    // fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
+    //     let mut seen_dot = false;
+    //     let mut num = start.to_string();
+    //     let radix = 10;
+    //
+    //     if start == '.' {
+    //         seen_dot = true;
+    //     }
+    //
+    //     loop {
+    //         match self.chars.peek() {
+    //             Some(c) if *c == '.' && !seen_dot => {
+    //                 num.push(*c);
+    //                 self.consume();
+    //                 seen_dot = true;
+    //             },
+    //             Some(c) if c.is_digit(radix) => {
+    //                 num.push(*c);
+    //                 self.consume();
+    //             },
+    //             Some(c) if c.is_ascii_alphabetic() || c.is_digit(10) => {
+    //                 num.push(*c);
+    //                 return Err(LexerError::NumericLiteralInvalidChar { raw: num });
+    //             },
+    //             _ => break Ok(TokenType::Numeric { raw: num, hint: if seen_dot { NumericHint::FloatingPoint } else { NumericHint::Integer } })
+    //         }
+    //     }
+    // }
+
     fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
-        let mut seen_dot = false;
-        let mut num = start.to_string();
+        let mut raw = start.to_string();
         let radix = 10;
+        let mut hint = NumericHint::Integer;
 
         if start == '.' {
-            seen_dot = true;
+            raw += &self.parse_digits(radix, false)?;
+            hint = NumericHint::FloatingPoint;
+        } else if start.is_digit(radix) {
+
+            raw += &self.parse_digits(radix, true)?;
+
+            if let Some(c) = try_consume!(self, '.') {
+                raw.push(c);
+                raw += &self.parse_digits(radix, false)?;
+                hint = NumericHint::FloatingPoint;
+            }
+        } else {
+            println!("Compiler bug if this line hits");
+            return Err(LexerError::NumericLiteralInvalidChar { raw, invalid: start})
         }
 
+        Ok(TokenType::Numeric { raw, hint })
+    }
+
+    fn parse_digits(&mut self, radix: u32, allow_empty: bool) -> Result<String, LexerError> {
+        let mut raw = String::new();
         loop {
             match self.chars.peek() {
-                Some(c) if *c == '.' && !seen_dot => {
-                    num.push(*c);
-                    self.consume();
-                    seen_dot = true;
+                None => {
+                    break if allow_empty || raw.len() > 0 {
+                        Ok(raw)
+                    } else {
+                        Err(LexerError::MissingExpectedSymbol {
+                            expected: TokenType::Numeric {
+                                raw: "<int>".to_string(),
+                                hint: NumericHint::Any
+                            },
+                            found: TokenType::EOF
+                        })
+                    }
+                }
+                Some(c) if c.is_digit(radix) || (*c == '_' && raw.len() > 0) => {
+                    // TODO: Fix this part, stuck in an infinite loop
+                    let res = c.is_digit(radix);
+                    raw.push(*c);
+                    println!("{}", res);
+
                 },
-                Some(c) if c.is_digit(radix) => {
-                    num.push(*c);
-                    self.consume();
-                },
-                Some(c) if c.is_ascii_alphabetic() || c.is_digit(10) => {
-                    num.push(*c);
-                    return Err(LexerError::NumericLiteralInvalidChar { raw: num });
-                },
-                _ => break Ok(TokenType::Numeric { raw: num, hint: if seen_dot { NumericHint::FloatingPoint } else { NumericHint::Integer } })
+                Some(c) if !c.is_ascii_alphabetic() && *c != '_' => break Ok(raw),
+                Some(c) => {
+                    break Err(LexerError::NumericLiteralInvalidChar {
+                        raw,
+                        invalid: *c
+                    })
+                }
             }
         }
     }

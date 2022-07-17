@@ -26,6 +26,7 @@ pub enum LexerError {
     #[error("Can't create numeric literal due to invalid character {raw:?}")]
     NumericLiteralInvalidChar {
         raw: String,
+        invalid: char
     },
 
     #[error("Unrecognized symbol")]
@@ -44,7 +45,8 @@ pub struct Punctuation {
 #[derive(Debug)]
 pub enum NumericHint {
     Integer,
-    FloatingPoint
+    FloatingPoint,
+    Any
 }
 
 
