@@ -10,6 +10,26 @@ pub struct Lexer<'a> {
     balancing_state: std::collections::HashMap<char, BalancingDepthType>,
 }
 
+macro_rules! try_consume {
+    ($self: tt, $($inner:tt),*) => {
+        if let Some(c) = $self.chars.peak() {
+            if try_consume!(impl c, $($inner), *) {
+                let tmp = *c;
+                $self.consume();
+                Some(tmp)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    };
+
+    (impl , ) => (false);
+    (impl $c:tt, $item:tt) => (*$c == $item);
+    (impl $c:tt, $item:tt, $($rest:tt), *) => (try_consume!(impl $c, $item) || try_consume!(impl $c, $($rest), *))
+}
+
 
 impl<'a> Lexer<'a> {
     pub fn new(chars: &'a str) -> Lexer<'a> {
