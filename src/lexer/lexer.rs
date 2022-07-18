@@ -57,10 +57,8 @@ impl<'a> Lexer<'a> {
     fn push_symbol(&mut self, c: &char) -> BalancingDepthType {
         if let Some(v) = self.balancing_state.get_mut(&c) {
             *v += 1;
-            println!("Another one");
             *v - 1
         } else {
-            println!("starting curly brace");
             self.balancing_state.insert(*c, 1);
             0
         }
@@ -115,6 +113,7 @@ impl<'a> Lexer<'a> {
 
         if start == '.' {
             raw += &self.parse_digits(radix, false)?;
+            println!("HIt");
             hint = NumericHint::FloatingPoint;
         } else if start.is_digit(radix) {
 
@@ -150,13 +149,7 @@ impl<'a> Lexer<'a> {
                         })
                     }
                 }
-                Some(c) if c.is_digit(radix) || (*c == '_' && raw.len() > 0) => {
-                    // TODO: Fix this part, stuck in an infinite loop
-                    let res = c.is_digit(radix);
-                    raw.push(*c);
-                    println!("{}", res);
-
-                },
+                Some(c) if c.is_digit(radix) || (*c == '_' && raw.len() > 0) => raw.push(*c),
                 Some(c) if !c.is_ascii_alphabetic() && *c != '_' => break Ok(raw),
                 Some(c) => {
                     break Err(LexerError::NumericLiteralInvalidChar {
@@ -165,6 +158,7 @@ impl<'a> Lexer<'a> {
                     })
                 }
             }
+            self.chars.next();
         }
     }
 

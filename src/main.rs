@@ -6,7 +6,7 @@ use lexer::lexer::Lexer;
 
 
 fn main() {
-    let mut lexer = Lexer::new("22 2.2");
+    let mut lexer = Lexer::new("(22 2.22 11)[[[]]()]");
 
     loop {
         match lexer.next_token() {
