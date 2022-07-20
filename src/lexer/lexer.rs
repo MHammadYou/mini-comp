@@ -113,10 +113,6 @@ impl<'a> Lexer<'a> {
                     } else {
                         Err(LexerError::MissingExpectedSymbol {
                             expected: "0 - 9",
-                            // expected: TokenType::Numeric {
-                            //     raw,
-                            //     hint: NumericHint::Any
-                            // },
                             found: TokenType::EOF
                         })
                     }

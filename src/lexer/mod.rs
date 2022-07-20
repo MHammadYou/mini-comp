@@ -7,14 +7,13 @@ use thiserror::Error;
 use std::io;
 
 #[derive(Error, Debug)]
-pub enum LexerError<'a> {
+pub enum LexerError {
     #[error("Some IO Error")]
     FileIO(#[from] io::Error),
 
     #[error("Expected {expected:?}, found {found:?}")]
     MissingExpectedSymbol {
-        expected: &'a str,
-        // expected: TokenType,
+        expected: &'static str,
         found: Token
     },
 
