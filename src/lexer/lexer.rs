@@ -1,6 +1,5 @@
 use crate::lexer::*;
 
-
 pub struct Lexer<'a> {
     pub cur_line: usize,
     pub cur_col: usize,
@@ -24,7 +23,6 @@ macro_rules! try_consume {
             None
         }
     };
-
     (impl , ) => (false);
     (impl $c:tt, $item:tt) => (*$c == $item);
     (impl $c:tt, $item:tt, $($rest:tt), *) => (try_consume!(impl $c, $item) || try_consume!(impl $c, $($rest), *))
@@ -111,20 +109,12 @@ impl<'a> Lexer<'a> {
                     break if allow_empty || raw.len() > 0 {
                         Ok(raw)
                     } else {
-                        Err(LexerError::MissingExpectedSymbol {
-                            expected: "0 - 9",
-                            found: TokenType::EOF
-                        })
+                        Err(LexerError::MissingExpectedSymbol { expected: "0 - 9", found: TokenType::EOF })
                     }
                 }
                 Some(c) if c.is_digit(radix) || (*c == '_' && raw.len() > 0) => raw.push(*c),
                 Some(c) if !c.is_ascii_alphabetic() && *c != '_' => break Ok(raw),
-                Some(c) => {
-                    break Err(LexerError::NumericLiteralInvalidChar {
-                        raw,
-                        invalid: *c
-                    })
-                }
+                Some(c) => break Err(LexerError::NumericLiteralInvalidChar { raw, invalid: *c })
             }
             self.chars.next();
         }
