@@ -1,5 +1,6 @@
 use crate::lexer::*;
 
+#[derive(Debug, Clone)]
 pub struct Lexer<'a> {
     pub cur_line: usize,
     pub cur_col: usize,
