@@ -2,7 +2,7 @@
 debug/
 **/*.rs.bk
 *.pdb
-
+./*.bat
 
 # User-specific stuff
 .idea/**/workspace.xml
