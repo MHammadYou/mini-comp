@@ -132,12 +132,27 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    fn parse_identifiers(&mut self, start: char) -> Result<TokenType, LexerError> {
+        let mut buf = start.to_string();
+        loop {
+            match self.chars.peek() {
+                Some(c) if c.is_alphanumeric() || c.is_digit(10) || *c == '_' => {
+                    buf.push(self.chars.next().unwrap())
+                },
+                _ => break Ok(TokenType::Identifier(buf))
+            }
+        }
+    }
+
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
         match c {
             '(' | '[' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_symbol(&c)) }),
             ')' | ']' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?) }),
             '0' ..= '9' | '.' => self.parse_numbers(c),
+            ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
+            '=' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal }),
             '"' => self.parse_string(),
+            c if c.is_alphanumeric() || c == '_' => self.parse_identifiers(c),
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
     }

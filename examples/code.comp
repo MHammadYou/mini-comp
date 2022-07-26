@@ -1,6 +1,7 @@
 
 (
-    "This is a string"
-    22.2 55
-    ([[]()(()))
+    "This is a string";
+    22.2 55;
+    ([[]()](()));
+    print("Hello, World!");
 )
