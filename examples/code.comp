@@ -1,8 +1,6 @@
 
 {
-    String str = "This is a string";
     22.2 55;
     ([[]()](()));
     print("Hello, World!");
-    int x = 4;
 }
