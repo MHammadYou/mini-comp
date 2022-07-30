@@ -132,16 +132,34 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn parse_identifiers(&mut self, start: char) -> Result<TokenType, LexerError> {
+    fn parse_identifiers(&mut self, start: char) -> TokenType {
         let mut buf = start.to_string();
         loop {
             match self.chars.peek() {
                 Some(c) if c.is_alphanumeric() || c.is_digit(10) || *c == '_' => {
                     buf.push(self.chars.next().unwrap())
                 },
-                _ => break Ok(TokenType::Identifier(buf))
+                _ => break TokenType::Identifier(buf)
             }
         }
+    }
+
+    fn try_parse_terminal(&mut self, terminal: &str) -> TokenType {
+        let mut buf = String::new();
+
+        loop {
+            match self.chars.peek() {
+                Some(c) if c.is_ascii_alphanumeric() || c.is_digit(10) || *c == '_' => {
+                    buf.push(self.chars.next().unwrap())
+                },
+                _ => break TokenType::Terminal(buf)
+            }
+        }
+
+    }
+
+    fn parse_bool_or_id(&mut self) -> TokenType {
+        TokenType::Identifier("".to_string())
     }
 
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
@@ -152,7 +170,8 @@ impl<'a> Lexer<'a> {
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
             '=' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal }),
             '"' => self.parse_string(),
-            c if c.is_alphanumeric() || c == '_' => self.parse_identifiers(c),
+            't' | 'f' => Ok(self.parse_bool_or_id()),
+            c if c.is_alphanumeric() || c == '_' => Ok(self.parse_identifiers(c)),
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
     }

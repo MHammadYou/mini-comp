@@ -58,7 +58,8 @@ pub enum TokenType {
     Identifier(String),
     Char(char),
     Numeric{ raw: String, hint: NumericHint },
-    String(String)
+    String(String),
+    Terminal(String)
 }
 
 #[derive(Debug)]
