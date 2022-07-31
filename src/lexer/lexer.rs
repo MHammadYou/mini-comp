@@ -144,24 +144,6 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn try_parse_terminal(&mut self, terminal: &str) -> TokenType {
-        let mut buf = String::new();
-
-        loop {
-            match self.chars.peek() {
-                Some(c) if c.is_ascii_alphanumeric() || c.is_digit(10) || *c == '_' => {
-                    buf.push(self.chars.next().unwrap())
-                },
-                _ => break TokenType::Terminal(buf)
-            }
-        }
-
-    }
-
-    fn parse_bool_or_id(&mut self) -> TokenType {
-        TokenType::Identifier("".to_string())
-    }
-
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
         match c {
             '(' | '[' | '{' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_symbol(&c)) }),
@@ -170,7 +152,7 @@ impl<'a> Lexer<'a> {
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
             '=' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal }),
             '"' => self.parse_string(),
-            't' | 'f' => Ok(self.parse_bool_or_id()),
+            // 't' | 'f' => Ok(self.parse_bool_or_id()),
             c if c.is_alphanumeric() || c == '_' => Ok(self.parse_identifiers(c)),
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
