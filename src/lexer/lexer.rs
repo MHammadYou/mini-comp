@@ -144,6 +144,10 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    fn tag_identifier(&mut self, ident: &str) -> Option<TokenType> {
+
+    }
+
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
         match c {
             '(' | '[' | '{' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_symbol(&c)) }),
