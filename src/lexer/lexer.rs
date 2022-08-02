@@ -1,4 +1,8 @@
+extern crate lazy_static;
+
 use crate::lexer::*;
+
+use lazy_static::*;
 
 #[derive(Debug, Clone)]
 pub struct Lexer<'a> {
@@ -28,6 +32,8 @@ macro_rules! try_consume {
     (impl $c:tt, $item:tt) => (*$c == $item);
     (impl $c:tt, $item:tt, $($rest:tt), *) => (try_consume!(impl $c, $item) || try_consume!(impl $c, $($rest), *))
 }
+
+
 
 
 impl<'a> Lexer<'a> {
@@ -132,20 +138,27 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn parse_identifiers(&mut self, start: char) -> TokenType {
+    fn parse_identifiers_or_terminals(&mut self, start: char) -> TokenType {
         let mut buf = start.to_string();
         loop {
             match self.chars.peek() {
                 Some(c) if c.is_alphanumeric() || c.is_digit(10) || *c == '_' => {
                     buf.push(self.chars.next().unwrap())
                 },
-                _ => break TokenType::Identifier(buf)
+                _ => break self.tag_identifier(buf)
             }
         }
     }
 
-    fn tag_identifier(&mut self, ident: &str) -> Option<TokenType> {
-
+    fn tag_identifier(&self, ident: String) -> TokenType {
+        if match ident.as_ref() {
+            "false" | "true" | "let" | "def" | "print"  => true,
+            _ => false
+        } {
+            TokenType::Terminal(ident)
+        } else {
+            TokenType::Identifier(ident)
+        }
     }
 
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
@@ -156,8 +169,7 @@ impl<'a> Lexer<'a> {
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
             '=' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal }),
             '"' => self.parse_string(),
-            // 't' | 'f' => Ok(self.parse_bool_or_id()),
-            c if c.is_alphanumeric() || c == '_' => Ok(self.parse_identifiers(c)),
+            c if c.is_alphanumeric() || c == '_' => Ok(self.parse_identifiers_or_terminals(c)),
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
         }
     }
