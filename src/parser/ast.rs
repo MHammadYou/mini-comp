@@ -1,3 +1,4 @@
+
 pub struct Program {
 
 }
@@ -9,3 +10,8 @@ pub enum Literal {
     Boolean(bool)
 }
 
+pub enum Atom {
+    Identifier(String),
+    Literal(Literal),
+
+}
