@@ -1,6 +1,6 @@
 
 pub struct Program {
-
+    pub exprs: Vec<Expr>,
 }
 
 pub enum Literal {
@@ -27,8 +27,17 @@ pub enum Operator {
     Less, LessEqual,
     Greater, GreaterEqual,
     Equal, NotEqual,
+
+    LogicalAnd, LogicalOr,
+
+    Call, Index
 }
 
 pub struct OpExpr {
     pub op: Operator,
+    pub args: Vec<Expr>,
+}
+
+pub enum Expr {
+    OpExpr(Operator),
 }
