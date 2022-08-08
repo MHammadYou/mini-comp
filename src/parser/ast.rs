@@ -1,3 +1,7 @@
+pub struct Ast {
+    
+}
+
 
 pub struct Program {
     pub exprs: Vec<Expr>,
