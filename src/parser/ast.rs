@@ -1,11 +1,12 @@
-pub struct Ast {
-    
-}
+pub trait Ast {
 
+}
 
 pub struct Program {
     pub exprs: Vec<Expr>,
 }
+
+impl Ast for Program {}
 
 pub enum Literal {
     Integer(i32),
@@ -14,11 +15,18 @@ pub enum Literal {
     Boolean(bool)
 }
 
+impl Ast for Literal {}
+
+
 pub enum Atom {
     Identifier(String),
     Literal(Literal),
 
 }
+
+impl Ast for Atom {}
+
+
 pub enum Operator {
     UnaryPlus,
     UnaryMinus,
@@ -37,11 +45,19 @@ pub enum Operator {
     Call, Index
 }
 
+impl Ast for Operator {}
+
+
 pub struct OpExpr {
     pub op: Operator,
     pub args: Vec<Expr>,
 }
 
+impl Ast for OpExpr {}
+
+
 pub enum Expr {
     OpExpr(Operator),
 }
+
+impl Ast for Expr {}
