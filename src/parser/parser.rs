@@ -3,9 +3,7 @@ use crate::lexer::lexer::Lexer;
 use parser::ast::{Program, Ast};
 
 
-pub struct TaggedNode<Ast> {
-    pub ast: Ast
-}
+
 
 pub struct Parser<'a> {
     lexer: Lexer<'a>
@@ -18,11 +16,18 @@ impl<'a> Parser<'a> {
         }
     }
 
-    pub fn parse_program(&mut self) -> TaggedNode<Program> {
-        TaggedNode {
-            ast: Program {
-                exprs: vec![]
-            }
+    pub fn parse_program(&mut self) -> Program {
+        Program {
+            exprs: vec![]
         }
     }
+}
+
+pub struct TaggedNode<Ast> {
+    pub ast: Ast,
+    pub err: ParserError
+}
+
+pub enum ParserError {
+
 }
