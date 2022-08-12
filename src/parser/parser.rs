@@ -3,16 +3,19 @@ use crate::lexer::lexer::Lexer;
 use parser::ast::{Program, Ast};
 
 
+pub type ErrorConsumer = fn(TaggedNode<Box<dyn Ast>>) -> ();
 
 
 pub struct Parser<'a> {
-    lexer: Lexer<'a>
+    lexer: Lexer<'a>,
+    error_consumer: ErrorConsumer
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(lexer: Lexer<'a>) -> Parser {
+    pub fn new(lexer: Lexer<'a>, error_consumer: ErrorConsumer) -> Parser {
         Parser {
-            lexer
+            lexer,
+            error_consumer
         }
     }
 
