@@ -20,6 +20,11 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse_program(&mut self) -> Program {
+
+        // TODO: fix here
+        self.error_consumer.call((TaggedNode{ ast: Box::new(Program { exprs: vec![] }), err: ParserError::None }));
+
+
         Program {
             exprs: vec![]
         }
@@ -32,5 +37,5 @@ pub struct TaggedNode<Ast> {
 }
 
 pub enum ParserError {
-
+    None
 }
