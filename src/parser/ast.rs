@@ -21,7 +21,6 @@ impl Ast for Literal {}
 pub enum Atom {
     Identifier(String),
     Literal(Literal),
-
 }
 
 impl Ast for Atom {}
