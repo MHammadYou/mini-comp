@@ -1,15 +1,17 @@
-pub trait Ast : std::fmt::Debug {
-
-}
-
-#[derive(Debug)]
+// pub trait Ast : std::fmt::Debug {
+//
+// }
+//
+// #[derive(Debug)]
 pub struct Program {
     pub exprs: Vec<Expr>,
 }
 
-impl Ast for Program {}
+// impl Ast for Program {}
+impl Program {}
 
-#[derive(Debug)]
+
+// #[derive(Debug)]
 pub enum Literal {
     Integer(i32),
     FloatingPoint(f64),
@@ -18,18 +20,21 @@ pub enum Literal {
 }
 
 
-impl Ast for Literal {}
+// impl Ast for Literal {}
+impl Literal {}
 
-#[derive(Debug)]
+
+// #[derive(Debug)]
 pub enum Atom {
     Identifier(String),
     Literal(Literal),
 }
 
-impl Ast for Atom {}
+// impl Ast for Atom {}
+impl Atom {}
 
 
-#[derive(Debug)]
+// #[derive(Debug)]
 pub enum Operator {
     UnaryPlus,
     UnaryMinus,
@@ -48,21 +53,22 @@ pub enum Operator {
     Call, Index
 }
 
-impl Ast for Operator {}
+// impl Ast for Operator {}
+impl Operator {}
 
-
-#[derive(Debug)]
+// #[derive(Debug)]
 pub struct OpExpr {
     pub op: Operator,
     pub args: Vec<Expr>,
 }
 
-impl Ast for OpExpr {}
+// impl Ast for OpExpr {}
+impl OpExpr {}
 
-
-#[derive(Debug)]
+// #[derive(Debug)]
 pub enum Expr {
     OpExpr(Operator),
 }
 
-impl Ast for Expr {}
+// impl Ast for Expr {}
+impl Expr {}
