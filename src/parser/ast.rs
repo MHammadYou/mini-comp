@@ -25,13 +25,12 @@ impl Literal {}
 
 
 // #[derive(Debug)]
-pub enum Atom {
-    Identifier(String),
-    Literal(Literal),
+pub struct Grouping {
+    pub expr: Expr
 }
 
 // impl Ast for Atom {}
-impl Atom {}
+impl Grouping {}
 
 
 // #[derive(Debug)]
@@ -57,17 +56,31 @@ pub enum Operator {
 impl Operator {}
 
 // #[derive(Debug)]
-pub struct OpExpr {
+pub struct UnaryExpr {
     pub op: Operator,
     pub args: Vec<Expr>,
 }
 
 // impl Ast for OpExpr {}
-impl OpExpr {}
+impl UnaryExpr {}
+
+
+pub struct BinaryExpr {
+    pub left: Expr,
+    pub op: Operator,
+    pub right: Expr
+}
+
+impl BinaryExpr {}
+
+
 
 // #[derive(Debug)]
 pub enum Expr {
-    OpExpr(Operator),
+    BinaryExpr(BinaryExpr),
+    UnaryExpr(UnaryExpr),
+    Grouping(Grouping),
+    Literal(Literal)
 }
 
 // impl Ast for Expr {}

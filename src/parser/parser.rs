@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::lexer::Lexer;
-use parser::ast::{Program, Ast};
+use parser::ast::{Program};
 
 
 pub type ErrorConsumer = fn(TaggedNode<Box<dyn Ast>>) -> ();
