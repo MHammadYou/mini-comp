@@ -2,8 +2,6 @@ extern crate lazy_static;
 
 use crate::lexer::*;
 
-use lazy_static::*;
-
 #[derive(Debug, Clone)]
 pub struct Lexer<'a> {
     pub cur_line: usize,
@@ -45,6 +43,20 @@ impl<'a> Lexer<'a> {
             chars: chars.chars().peekable(),
             balancing_state: std::collections::HashMap::new(),
         }
+    }
+
+    pub fn get_tokens(&mut self) -> Vec<TokenType> {
+        let mut tokens = Vec::new();
+
+        loop {
+            match self.next_token() {
+                Ok(TokenType::EOF) => break tokens.push(TokenType::EOF),
+                Ok(token) => tokens.push(token),
+                Err(err) => println!("{}", err)
+            }
+        }
+
+        tokens
     }
 
     fn map_balance(c: &char) -> char {

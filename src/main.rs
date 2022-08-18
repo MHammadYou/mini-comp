@@ -3,7 +3,6 @@ extern crate clap;
 pub mod lexer;
 pub mod parser;
 
-use lexer::*;
 use lexer::lexer::Lexer;
 
 use clap::{App, SubCommand};
@@ -28,13 +27,18 @@ fn main() -> std::io::Result<()> {
             let shows = sub_matches.values_of("show").unwrap_or_default().collect::<Vec<&str>>();
             if shows.contains(&"tokens") {
                 let mut lexer = lexer.clone();
-                loop {
-                        match lexer.next_token() {
-                            Ok(TokenType::EOF) => break,
-                            Ok(token) => println!("{:?}", token),
-                            Err(err) => println!("{:?}", err)
-                        }
-                    }
+                // loop {
+                //         match lexer.next_token() {
+                //             Ok(TokenType::EOF) => break,
+                //             Ok(token) => println!("{:?}", token),
+                //             Err(err) => println!("{:?}", err)
+                //         }
+                //     }
+
+                let tokens = lexer.get_tokens();
+                for token in tokens {
+                    println!("{:?}", token);
+                }
             }
         },
         _ => {}

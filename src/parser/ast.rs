@@ -3,8 +3,14 @@
 // }
 //
 // #[derive(Debug)]
+
+
+use super::parser::ParserError;
+
+
 pub struct Program {
-    pub exprs: Vec<Expr>,
+    // pub exprs: Vec<Expr>,
+    pub expr: Result<Expr, ParserError>,
 }
 
 // impl Ast for Program {}
