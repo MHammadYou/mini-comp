@@ -26,7 +26,7 @@ impl Literal {}
 
 // #[derive(Debug)]
 pub struct Grouping {
-    pub expr: Expr
+    pub expr: Box<Expr>
 }
 
 // impl Ast for Atom {}
@@ -66,9 +66,9 @@ impl UnaryExpr {}
 
 
 pub struct BinaryExpr {
-    pub left: Expr,
+    pub left: Box<Expr>,
     pub op: Operator,
-    pub right: Expr
+    pub right: Box<Expr>
 }
 
 impl BinaryExpr {}
