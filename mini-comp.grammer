@@ -11,4 +11,5 @@ factor     = unary ( ( "/" | "*" ) unary )*
 unary      = ( "!" | "-" ) unary 
                 | literal
 
-literal    = NUMERIC | STRING | TERMINAL | "(" expression ")"
+literal    = NUMERIC | STRING | TERMINAL 
+                | "(" expression ")"

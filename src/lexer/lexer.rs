@@ -179,6 +179,7 @@ impl<'a> Lexer<'a> {
             ')' | ']' | '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?) }),
             '0' ..= '9' | '.' => self.parse_numbers(c),
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
+            '!' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Bang }),
             '=' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal }),
 
             '+' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Plus }),

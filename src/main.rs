@@ -4,6 +4,7 @@ pub mod lexer;
 pub mod parser;
 
 use lexer::lexer::Lexer;
+use parser::parser::Parser;
 
 use clap::{App, SubCommand};
 
@@ -36,10 +37,14 @@ fn main() -> std::io::Result<()> {
                 //     }
 
                 let tokens = lexer.get_tokens();
-                for token in tokens {
-                    println!("{:?}", token);
-                }
-            }
+                // for token in tokens {
+                //     println!("{:?}", token);
+                // }
+
+                let mut parser = Parser::new(tokens);
+                // parser.parse_program();
+                dbg!(parser.parse_program().expr);
+;            }
         },
         _ => {}
     }

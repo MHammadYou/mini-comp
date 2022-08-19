@@ -10,6 +10,7 @@ use crate::lexer::TokenType;
 use super::parser::ParserError;
 
 
+#[derive(Debug)]
 pub struct Program {
     // pub exprs: Vec<Expr>,
     pub expr: Result<Expr, ParserError>,
@@ -19,7 +20,7 @@ pub struct Program {
 impl Program {}
 
 
-// #[derive(Debug)]
+#[derive(Debug)]
 pub enum Literal {
     Integer(i32),
     FloatingPoint(f64),
@@ -32,7 +33,7 @@ pub enum Literal {
 impl Literal {}
 
 
-// #[derive(Debug)]
+#[derive(Debug)]
 pub struct Grouping {
     pub expr: Box<Expr>
 }
@@ -63,16 +64,17 @@ impl Grouping {}
 // impl Ast for Operator {}
 // impl Operator {}
 
-// #[derive(Debug)]
+#[derive(Debug)]
 pub struct UnaryExpr {
     pub op: TokenType,
-    pub args: Vec<Expr>,
+    pub right: Box<Expr>,
 }
 
 // impl Ast for OpExpr {}
 impl UnaryExpr {}
 
 
+#[derive(Debug)]
 pub struct BinaryExpr {
     pub left: Box<Expr>,
     pub op: TokenType,
@@ -83,7 +85,7 @@ impl BinaryExpr {}
 
 
 
-// #[derive(Debug)]
+#[derive(Debug)]
 pub enum Expr {
     BinaryExpr(BinaryExpr),
     UnaryExpr(UnaryExpr),

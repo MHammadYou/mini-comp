@@ -76,7 +76,8 @@ pub enum PunctuationKind {
     Open(BalancingDepthType),
     Close(BalancingDepthType),
     Separator,
-    Equal
+    Equal,
+    Bang // !
 }
 
 type BalancingDepthType = i32;

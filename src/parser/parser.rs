@@ -1,5 +1,5 @@
 use super::*;
-use crate::lexer::{TokenType, OperationKind};
+use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
 use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal, Grouping };
 
 
@@ -32,7 +32,10 @@ impl Parser {
 
         let mut expr = self.parse_factor().unwrap();
 
-        while self.match_type(&[&TokenType::Operations { raw: '+', kind: OperationKind::Plus }]) {
+        while self.match_type(&[
+            &TokenType::Operations { raw: '+', kind: OperationKind::Plus }, 
+            &TokenType::Operations { raw: '-', kind: OperationKind::Minus }
+            ]) {
 
             let operator = self.previous().unwrap();
             
@@ -63,17 +66,112 @@ impl Parser {
     }
 
     fn parse_factor(&mut self) -> Result<Expr, ParserError> {
-        let expr = BinaryExpr{
-            left: Box::new(
-                Expr::Literal(Literal::Integer(34))
-            ),
-            op: TokenType::Operations { raw: '+', kind: OperationKind::Plus },
-            right: Box::new(
-                Expr::Literal(Literal::Integer(32))
-            )
-        };
+        let mut expr = self.parse_unary().unwrap();
+
+        while self.match_type(&[
+            &TokenType::Operations { raw: '*', kind: OperationKind::Star }, 
+            &TokenType::Operations { raw: '/', kind: OperationKind::Slash }
+            ]) {
+            
+                let operator = self.previous().unwrap();
+                let operator = match operator {
+
+                    TokenType::Operations { raw, kind: OperationKind::Star } => TokenType::Operations { raw: *raw, kind: OperationKind::Star },
+                    TokenType::Operations { raw, kind: OperationKind::Slash } => TokenType::Operations { raw: *raw, kind: OperationKind::Slash },
+                    _ => TokenType::EOF
+
+                };
+
+                let right = self.parse_factor().unwrap();
+
+                let new_expr = BinaryExpr{
+                    left: Box::new(expr),
+                    op: operator,
+                    right: Box::new(right)
+                };
+
+                expr = Expr::BinaryExpr(new_expr)
+            }
+
+        Ok(expr)
+    }
+
+
+    fn parse_unary(&mut self) -> Result<Expr, ParserError> {
         
-        Ok(Expr::BinaryExpr(expr))
+        if self.match_type(&[
+            &TokenType::Punctuation { raw: '!', kind: PunctuationKind::Bang }, 
+            &TokenType::Operations { raw: '-', kind: OperationKind::Plus }
+            ]) {
+                let operator = self.previous().unwrap();
+                let operator = match operator {
+                    TokenType::Punctuation { raw, kind: PunctuationKind::Bang } => TokenType::Punctuation { raw: *raw, kind: PunctuationKind::Bang },
+                    TokenType::Operations { raw, kind: OperationKind::Minus } => TokenType::Operations { raw: *raw, kind: OperationKind::Minus },
+                    _ => TokenType::EOF
+                };
+
+                let right  = self.parse_unary().unwrap();
+                let new_expr = UnaryExpr {
+                    op: operator,
+                    right: Box::new(right)
+                };
+
+                return Ok(Expr::UnaryExpr(new_expr))
+            }
+        
+        self.parse_literal()
+    }
+
+    fn parse_literal(&mut self) -> Result<Expr, ParserError> {
+
+        // let hint = match self.peek() {
+        //     Some(token_type) => match token_type {
+        //         TokenType::Numeric { raw, hint } => hint,
+        //         _ => &NumericHint::Any
+        //     },
+        //     None => &NumericHint::Any,
+        // };
+
+        // match hint {
+        //     NumericHint::Integer => {
+        //         let token_type = match self.previous().unwrap() {
+        //             TokenType::Numeric { raw, hint: NumericHint::Integer } => TokenType::Numeric { raw: raw.to_string(), hint: NumericHint::Integer },
+        //             _ => TokenType::EOF
+        //         };
+
+        //         let value_str = match token_type {
+        //             TokenType::Numeric { raw, hint: _ } => raw,
+        //             _ => "Nil".to_string(),
+        //         };
+        //         let value = value_str.parse::<i32>().unwrap();
+        //         let expr = Literal::Integer(value);
+        //         return Ok(Expr::Literal(expr))
+        //     },
+        //     _ => return Err(ParserError::None)
+        // }
+
+
+        if self.match_type(&[
+            &TokenType::Numeric { raw: "10".to_string(), hint: NumericHint::Integer } 
+            ]) {
+
+                let token_type = match self.previous().unwrap() {
+                    TokenType::Numeric { raw, hint: NumericHint::Integer } => TokenType::Numeric { raw: raw.to_string(), hint: NumericHint::Integer },
+                    _ => TokenType::EOF
+                };
+
+                let value_str = match token_type {
+                    TokenType::Numeric { raw, hint: _ } => raw,
+                    _ => "Nil".to_string(),
+                };
+                let value = value_str.parse::<i32>().unwrap();
+                let expr = Literal::Integer(value);
+                return Ok(Expr::Literal(expr))
+            }
+
+            else {
+                Err(ParserError::None)
+            }
     }
 
     fn match_type(&mut self, types: &[&TokenType]) -> bool {
