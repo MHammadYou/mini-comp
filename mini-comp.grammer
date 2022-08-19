@@ -1,0 +1,14 @@
+
+
+program    = expression
+
+expression = term
+
+term       = factor ( ( "-" | "+" ) factor )* 
+
+factor     = unary ( ( "/" | "*" ) unary )* 
+
+unary      = ( "!" | "-" ) unary 
+                | literal
+
+literal    = NUMERIC | STRING | TERMINAL | "(" expression ")"

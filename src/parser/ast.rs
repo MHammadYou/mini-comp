@@ -5,6 +5,8 @@
 // #[derive(Debug)]
 
 
+use crate::lexer::TokenType;
+
 use super::parser::ParserError;
 
 
@@ -40,30 +42,30 @@ impl Grouping {}
 
 
 // #[derive(Debug)]
-pub enum Operator {
-    UnaryPlus,
-    UnaryMinus,
-    LogicalNegate,
+// pub enum Operator {
+//     UnaryPlus,
+//     UnaryMinus,
+//     LogicalNegate,
 
-    Plus, Minus,
-    Multiply, Subtract,
-    Modules,
+//     Plus, Minus,
+//     Multiply, Subtract,
+//     Modules,
 
-    Less, LessEqual,
-    Greater, GreaterEqual,
-    Equal, NotEqual,
+//     Less, LessEqual,
+//     Greater, GreaterEqual,
+//     Equal, NotEqual,
 
-    LogicalAnd, LogicalOr,
+//     LogicalAnd, LogicalOr,
 
-    Call, Index
-}
+//     Call, Index
+// }
 
 // impl Ast for Operator {}
-impl Operator {}
+// impl Operator {}
 
 // #[derive(Debug)]
 pub struct UnaryExpr {
-    pub op: Operator,
+    pub op: TokenType,
     pub args: Vec<Expr>,
 }
 
@@ -73,7 +75,7 @@ impl UnaryExpr {}
 
 pub struct BinaryExpr {
     pub left: Box<Expr>,
-    pub op: Operator,
+    pub op: TokenType,
     pub right: Box<Expr>
 }
 

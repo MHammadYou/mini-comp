@@ -37,24 +37,33 @@ pub enum LexerError {
 
 pub type Token = TokenType;
 
+#[derive(PartialEq)]
 pub struct Punctuation {
     pub raw: char,
     pub kind: PunctuationKind
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum NumericHint {
     Integer,
     FloatingPoint,
     Any
 }
 
+#[derive(Debug, PartialEq)]
+pub enum OperationKind {
+    Plus,
+    Minus,
+    Star,
+    Slash
+}
 
-#[derive(Debug)]
+
+#[derive(Debug, PartialEq)]
 pub enum TokenType {
     EOF,
-    Punctuation { raw: char, kind: PunctuationKind},
-    Operations(String),
+    Punctuation { raw: char, kind: PunctuationKind },
+    Operations{ raw: char, kind: OperationKind },
     Identifier(String),
     Char(char),
     Numeric{ raw: String, hint: NumericHint },
@@ -62,7 +71,7 @@ pub enum TokenType {
     Terminal(String)
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum PunctuationKind {
     Open(BalancingDepthType),
     Close(BalancingDepthType),
@@ -71,3 +80,4 @@ pub enum PunctuationKind {
 }
 
 type BalancingDepthType = i32;
+

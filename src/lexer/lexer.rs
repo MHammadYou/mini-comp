@@ -180,6 +180,12 @@ impl<'a> Lexer<'a> {
             '0' ..= '9' | '.' => self.parse_numbers(c),
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
             '=' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal }),
+
+            '+' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Plus }),
+            '-' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Minus }),
+            '*' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Star }),
+            '/' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Slash }),
+
             '"' => self.parse_string(),
             c if c.is_alphanumeric() || c == '_' => Ok(self.parse_identifiers_or_terminals(c)),
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
