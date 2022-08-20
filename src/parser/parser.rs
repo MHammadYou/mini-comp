@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
-use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal, Grouping };
+use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
 
 
 pub struct Parser {
@@ -101,7 +101,7 @@ impl Parser {
         
         if self.match_type(&[
             &TokenType::Punctuation { raw: '!', kind: PunctuationKind::Bang }, 
-            &TokenType::Operations { raw: '-', kind: OperationKind::Plus }
+            &TokenType::Operations { raw: '-', kind: OperationKind::Minus }
             ]) {
                 let operator = self.previous().unwrap();
                 let operator = match operator {
@@ -123,6 +123,31 @@ impl Parser {
     }
 
     fn parse_literal(&mut self) -> Result<Expr, ParserError> {
+
+
+        /*
+            Parse Terminals
+        */
+
+        if self.match_type(&[&TokenType::Terminal(String::from("true"))]) {
+            let expr = Literal::Terminal(Terminal{ value: Box::new("true")});
+            return Ok(Expr::Literal(expr))
+        }
+
+        if self.match_type(&[&TokenType::Terminal(String::from("false"))]) {
+            let expr = Literal::Terminal(Terminal{ value: Box::new("false")});
+            return Ok(Expr::Literal(expr))
+        }
+
+        if self.match_type(&[&TokenType::Terminal(String::from("nil"))]) {
+            let expr = Literal::Terminal(Terminal{ value: Box::new("nil")});
+            return Ok(Expr::Literal(expr))
+        }
+
+
+        /*
+            Parse Numerics
+        */
 
         let hint = match self.peek() {
             Some(token_type) => match token_type {

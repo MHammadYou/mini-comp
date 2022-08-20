@@ -5,6 +5,8 @@
 // #[derive(Debug)]
 
 
+use std::any::Any;
+
 use crate::lexer::TokenType;
 
 use super::parser::ParserError;
@@ -25,7 +27,8 @@ pub enum Literal {
     Integer(i32),
     FloatingPoint(f64),
     String(String),
-    Boolean(bool)
+    Boolean(bool),
+    Terminal(Terminal)
 }
 
 
@@ -84,7 +87,6 @@ pub struct BinaryExpr {
 impl BinaryExpr {}
 
 
-
 #[derive(Debug)]
 pub enum Expr {
     BinaryExpr(BinaryExpr),
@@ -95,3 +97,9 @@ pub enum Expr {
 
 // impl Ast for Expr {}
 impl Expr {}
+
+
+#[derive(Debug)]
+pub struct Terminal {
+    pub value: Box<dyn Any>
+}

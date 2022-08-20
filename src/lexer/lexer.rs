@@ -164,7 +164,7 @@ impl<'a> Lexer<'a> {
 
     fn tag_identifier(&self, ident: String) -> TokenType {
         if match ident.as_ref() {
-            "false" | "true" | "let" | "def" | "print"  => true,
+            "false" | "true" | "let" | "def" | "print" | "nil"  => true,
             _ => false
         } {
             TokenType::Terminal(ident)
