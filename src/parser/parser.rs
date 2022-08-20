@@ -151,6 +151,11 @@ impl Parser {
 
             return Ok(Expr::Literal(expr));
         } else if *hint == NumericHint::FloatingPoint {
+
+            /*
+                Parse Floats
+            */
+
             let token = self.peek().unwrap();
             let value_str = match token {
                 TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
@@ -162,6 +167,21 @@ impl Parser {
 
             self.advance();
 
+            return Ok(Expr::Literal(expr))
+        }
+
+
+        /*
+            Parse Strings
+        */
+        let raw = self.peek().unwrap();
+        let raw = match raw {
+            TokenType::String(raw) => String::from(&raw[..]),
+            _ => "Nil".to_string()
+        };
+
+        if self.match_type(&[&TokenType::String(String::from(&raw[..]))]) {
+            let expr = Literal::String(String::from(raw));
             return Ok(Expr::Literal(expr))
         }
 
@@ -211,7 +231,6 @@ impl Parser {
                 *token_type == TokenType::EOF
             },
             None => false
-
         }
     }
 }
