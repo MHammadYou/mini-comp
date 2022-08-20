@@ -8,6 +8,8 @@ use parser::parser::Parser;
 
 use clap::{App, SubCommand};
 
+use crate::lexer::TokenType;
+
 fn main() -> std::io::Result<()> {
 
     let matches = App::new("MiniComp")
@@ -28,23 +30,24 @@ fn main() -> std::io::Result<()> {
             let shows = sub_matches.values_of("show").unwrap_or_default().collect::<Vec<&str>>();
             if shows.contains(&"tokens") {
                 let mut lexer = lexer.clone();
-                // loop {
-                //         match lexer.next_token() {
-                //             Ok(TokenType::EOF) => break,
-                //             Ok(token) => println!("{:?}", token),
-                //             Err(err) => println!("{:?}", err)
-                //         }
-                //     }
+                loop {
+                        match lexer.next_token() {
+                            Ok(TokenType::EOF) => break,
+                            Ok(token) => println!("{:?}", token),
+                            Err(err) => println!("{:?}", err)
+                        }
+                    }
+            }
 
+            if shows.contains(&"ast") {
+                let mut lexer = lexer.clone();
                 let tokens = lexer.get_tokens();
-                // for token in tokens {
-                //     println!("{:?}", token);
-                // }
-
+    
                 let mut parser = Parser::new(tokens);
-                // parser.parse_program();
-                dbg!(parser.parse_program().expr);
-;            }
+                dbg!(parser.parse_program());
+            }
+
+
         },
         _ => {}
     }

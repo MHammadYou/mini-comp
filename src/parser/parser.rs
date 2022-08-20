@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
-use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal, Grouping };
+use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal };
 
 
 pub struct Parser {
@@ -124,54 +124,48 @@ impl Parser {
 
     fn parse_literal(&mut self) -> Result<Expr, ParserError> {
 
-        // let hint = match self.peek() {
-        //     Some(token_type) => match token_type {
-        //         TokenType::Numeric { raw, hint } => hint,
-        //         _ => &NumericHint::Any
-        //     },
-        //     None => &NumericHint::Any,
-        // };
+        let hint = match self.peek() {
+            Some(token_type) => match token_type {
+                TokenType::Numeric { raw: _, hint } => hint,
+                _ => &NumericHint::Any
+            },
+            None => &NumericHint::Any,
+        };
 
-        // match hint {
-        //     NumericHint::Integer => {
-        //         let token_type = match self.previous().unwrap() {
-        //             TokenType::Numeric { raw, hint: NumericHint::Integer } => TokenType::Numeric { raw: raw.to_string(), hint: NumericHint::Integer },
-        //             _ => TokenType::EOF
-        //         };
+        if *hint == NumericHint::Integer {
 
-        //         let value_str = match token_type {
-        //             TokenType::Numeric { raw, hint: _ } => raw,
-        //             _ => "Nil".to_string(),
-        //         };
-        //         let value = value_str.parse::<i32>().unwrap();
-        //         let expr = Literal::Integer(value);
-        //         return Ok(Expr::Literal(expr))
-        //     },
-        //     _ => return Err(ParserError::None)
-        // }
+            let token = match self.peek() {
+                Some(token_type) => token_type,
+                None => &TokenType::EOF,
+            };
+            
+            let value_str = match token {
+                TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
+                _ => "Nil".to_string()
+            };
 
+            let value = value_str.parse::<i32>().unwrap();
+            let expr = Literal::Integer(value);
 
-        if self.match_type(&[
-            &TokenType::Numeric { raw: "10".to_string(), hint: NumericHint::Integer } 
-            ]) {
+            self.advance();
 
-                let token_type = match self.previous().unwrap() {
-                    TokenType::Numeric { raw, hint: NumericHint::Integer } => TokenType::Numeric { raw: raw.to_string(), hint: NumericHint::Integer },
-                    _ => TokenType::EOF
-                };
+            return Ok(Expr::Literal(expr));
+        } else if *hint == NumericHint::FloatingPoint {
+            let token = self.peek().unwrap();
+            let value_str = match token {
+                TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
+                _ => "Nil".to_string()
+            };
 
-                let value_str = match token_type {
-                    TokenType::Numeric { raw, hint: _ } => raw,
-                    _ => "Nil".to_string(),
-                };
-                let value = value_str.parse::<i32>().unwrap();
-                let expr = Literal::Integer(value);
-                return Ok(Expr::Literal(expr))
-            }
+            let value = value_str.parse::<f64>().unwrap();
+            let expr = Literal::FloatingPoint(value);
 
-            else {
-                Err(ParserError::None)
-            }
+            self.advance();
+
+            return Ok(Expr::Literal(expr))
+        }
+
+        Err(ParserError::None)
     }
 
     fn match_type(&mut self, types: &[&TokenType]) -> bool {
@@ -220,8 +214,6 @@ impl Parser {
 
         }
     }
-
-
 }
 
 
