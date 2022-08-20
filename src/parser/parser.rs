@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
-use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal };
+use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal, Grouping };
 
 
 pub struct Parser {
@@ -185,7 +185,27 @@ impl Parser {
             return Ok(Expr::Literal(expr))
         }
 
+        /*
+            Parse Grouping ()
+        */
+
+        if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::Open(0) }]) {
+            let expr = self.parse_expr().unwrap();
+            self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::Close(0) });
+            
+            let expr = Grouping { expr: Box::new(expr) };
+            return Ok(Expr::Grouping(expr))
+        }
+
         Err(ParserError::None)
+    }
+
+    fn consume_unit(&mut self, token_type: &TokenType) {
+        if self.check_type(token_type) {
+            self.advance();
+            return;
+        }
+        panic!("Invalid syntax, Expected )");
     }
 
     fn match_type(&mut self, types: &[&TokenType]) -> bool {
