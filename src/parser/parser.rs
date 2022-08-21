@@ -37,7 +37,14 @@ impl Parser {
             &TokenType::Operations { raw: '-', kind: OperationKind::Minus }
             ]) {
 
-            let operator = self.previous().unwrap();
+            let operator: &TokenType;
+
+            match self.previous() {
+                Some(token_type) => {
+                    operator = token_type
+                },
+                None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
+            }
             
             // Tring to get the actual obj instead of refernce
             // can't think of anything else right now
@@ -283,5 +290,6 @@ impl Parser {
 
 #[derive(Debug)]
 pub enum ParserError {
-    None
+    None,
+    InvalidOperator(String),
 }
