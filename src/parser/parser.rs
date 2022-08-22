@@ -80,7 +80,14 @@ impl Parser {
             &TokenType::Operations { raw: '/', kind: OperationKind::Slash }
             ]) {
             
-                let operator = self.previous().unwrap();
+                let operator: &TokenType;
+
+                match self.previous() {
+                    Some(token_type) => {
+                        operator = token_type
+                    },
+                    None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
+                }
                 let operator = match operator {
 
                     TokenType::Operations { raw, kind: OperationKind::Star } => TokenType::Operations { raw: *raw, kind: OperationKind::Star },
@@ -110,7 +117,15 @@ impl Parser {
             &TokenType::Punctuation { raw: '!', kind: PunctuationKind::Bang }, 
             &TokenType::Operations { raw: '-', kind: OperationKind::Minus }
             ]) {
-                let operator = self.previous().unwrap();
+                let operator: &TokenType;
+
+                match self.previous() {
+                    Some(token_type) => {
+                        operator = token_type
+                    },
+                    None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
+                }
+
                 let operator = match operator {
                     TokenType::Punctuation { raw, kind: PunctuationKind::Bang } => TokenType::Punctuation { raw: *raw, kind: PunctuationKind::Bang },
                     TokenType::Operations { raw, kind: OperationKind::Minus } => TokenType::Operations { raw: *raw, kind: OperationKind::Minus },
@@ -292,4 +307,5 @@ impl Parser {
 pub enum ParserError {
     None,
     InvalidOperator(String),
+    InvalidExpression(String)
 }
