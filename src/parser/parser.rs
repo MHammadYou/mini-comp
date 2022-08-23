@@ -29,8 +29,14 @@ impl Parser {
 
     fn parse_term(&mut self) -> Result<Expr, ParserError> {
 
+        let mut expr: Expr;
 
-        let mut expr = self.parse_factor().unwrap();
+        match self.parse_factor() {
+            Ok(expression) => {
+                expr = expression;
+            },
+            Err(err) => return Err(err)
+        }
 
         while self.match_type(&[
             &TokenType::Operations { raw: '+', kind: OperationKind::Plus }, 
@@ -57,7 +63,13 @@ impl Parser {
                 _ => TokenType::EOF
             };
 
-            let right = self.parse_factor().unwrap();
+            let right: Expr;
+            match self.parse_factor() {
+                Ok(expression) => {
+                    right = expression;
+                },
+                Err(err) => return Err(err)
+            }
 
             let new_expr = BinaryExpr{
                 left: Box::new(expr),
@@ -73,7 +85,14 @@ impl Parser {
     }
 
     fn parse_factor(&mut self) -> Result<Expr, ParserError> {
-        let mut expr = self.parse_unary().unwrap();
+        let mut expr: Expr;
+
+        match self.parse_unary() {
+            Ok(expression) => {
+                expr = expression;
+            },
+            Err(err) => return Err(err)
+        }
 
         while self.match_type(&[
             &TokenType::Operations { raw: '*', kind: OperationKind::Star }, 
@@ -194,10 +213,6 @@ impl Parser {
 
         if *hint == NumericHint::Integer {
 
-            // let token = match self.peek() {
-            //     Some(token_type) => token_type,
-            //     None => &TokenType::EOF,
-            // };
             let token: &TokenType;
             match self.peek() {
                 Some(token_type) => {
