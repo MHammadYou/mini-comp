@@ -96,7 +96,13 @@ impl Parser {
 
                 };
 
-                let right = self.parse_factor().unwrap();
+                let right: Expr;
+                match self.parse_unary() {
+                    Ok(expression) => {
+                        right = expression;
+                    },
+                    Err(err) => return Err(err)
+                }
 
                 let new_expr = BinaryExpr{
                     left: Box::new(expr),
@@ -132,7 +138,14 @@ impl Parser {
                     _ => TokenType::EOF
                 };
 
-                let right  = self.parse_unary().unwrap();
+                let right: Expr;
+                match self.parse_unary() {
+                    Ok(expression) => {
+                        right = expression;
+                    },
+                    Err(err) => return Err(err)
+                }
+
                 let new_expr = UnaryExpr {
                     op: operator,
                     right: Box::new(right)
@@ -181,10 +194,17 @@ impl Parser {
 
         if *hint == NumericHint::Integer {
 
-            let token = match self.peek() {
-                Some(token_type) => token_type,
-                None => &TokenType::EOF,
-            };
+            // let token = match self.peek() {
+            //     Some(token_type) => token_type,
+            //     None => &TokenType::EOF,
+            // };
+            let token: &TokenType;
+            match self.peek() {
+                Some(token_type) => {
+                    token = token_type
+                },
+                None => return Err(ParserError::InvalidExpression(String::from("Invalid Expression")))
+            }
             
             let value_str = match token {
                 TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
@@ -216,14 +236,7 @@ impl Parser {
                 _ => "Nil".to_string()
             };
 
-            let value: f64;
-            match value_str.parse::<f64>() {
-                Ok(float) => {
-                    value = float;
-                },
-                Err(_err) => return Err(ParserError::None)
-            }
-
+            let value: f64 = value_str.parse::<f64>().unwrap();
             let expr = Literal::FloatingPoint(value);
 
             self.advance();
