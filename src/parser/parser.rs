@@ -203,13 +203,27 @@ impl Parser {
                 Parse Floats
             */
 
-            let token = self.peek().unwrap();
+            let token: &TokenType;
+            match self.peek() {
+                Some(token_type) => {
+                    token = token_type
+                },
+                None => return Err(ParserError::InvalidExpression(String::from("Invalid Expression")))
+            }
+
             let value_str = match token {
                 TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
                 _ => "Nil".to_string()
             };
 
-            let value = value_str.parse::<f64>().unwrap();
+            let value: f64;
+            match value_str.parse::<f64>() {
+                Ok(float) => {
+                    value = float;
+                },
+                Err(_err) => return Err(ParserError::None)
+            }
+
             let expr = Literal::FloatingPoint(value);
 
             self.advance();
@@ -221,7 +235,16 @@ impl Parser {
         /*
             Parse Strings
         */
-        let raw = self.peek().unwrap();
+        let raw: &TokenType;
+
+        match self.peek() {
+            Some(token_type) => {
+                raw = token_type;
+            },
+            None => return Err(ParserError::InvalidExpression(String::from("Invalid Expression")))
+        }
+
+
         let raw = match raw {
             TokenType::String(raw) => String::from(&raw[..]),
             _ => "Nil".to_string()
@@ -237,7 +260,14 @@ impl Parser {
         */
 
         if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::Open(0) }]) {
-            let expr = self.parse_expr().unwrap();
+            let expr: Expr;
+            match self.parse_expr() {
+                Ok(expression) => {
+                    expr = expression;
+                },
+                Err(err) => return Err(err)
+            }
+
             self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::Close(0) });
             
             let expr = Grouping { expr: Box::new(expr) };
