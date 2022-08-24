@@ -1,10 +1,3 @@
-// pub trait Ast : std::fmt::Debug {
-//
-// }
-//
-// #[derive(Debug)]
-
-
 use std::any::Any;
 
 use crate::lexer::TokenType;
@@ -14,11 +7,9 @@ use super::parser::ParserError;
 
 #[derive(Debug)]
 pub struct Program {
-    // pub exprs: Vec<Expr>,
     pub expr: Result<Expr, ParserError>,
 }
 
-// impl Ast for Program {}
 impl Program {}
 
 
@@ -32,7 +23,6 @@ pub enum Literal {
 }
 
 
-// impl Ast for Literal {}
 impl Literal {}
 
 
@@ -41,31 +31,7 @@ pub struct Grouping {
     pub expr: Box<Expr>
 }
 
-// impl Ast for Atom {}
 impl Grouping {}
-
-
-// #[derive(Debug)]
-// pub enum Operator {
-//     UnaryPlus,
-//     UnaryMinus,
-//     LogicalNegate,
-
-//     Plus, Minus,
-//     Multiply, Subtract,
-//     Modules,
-
-//     Less, LessEqual,
-//     Greater, GreaterEqual,
-//     Equal, NotEqual,
-
-//     LogicalAnd, LogicalOr,
-
-//     Call, Index
-// }
-
-// impl Ast for Operator {}
-// impl Operator {}
 
 #[derive(Debug)]
 pub struct UnaryExpr {
@@ -73,7 +39,6 @@ pub struct UnaryExpr {
     pub right: Box<Expr>,
 }
 
-// impl Ast for OpExpr {}
 impl UnaryExpr {}
 
 
@@ -95,7 +60,6 @@ pub enum Expr {
     Literal(Literal)
 }
 
-// impl Ast for Expr {}
 impl Expr {}
 
 

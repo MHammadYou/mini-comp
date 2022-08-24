@@ -302,7 +302,7 @@ impl Parser {
             return Ok(Expr::Grouping(expr))
         }
 
-        Err(ParserError::None)
+        Err(ParserError::InvalidLiteral(String::from("No literal match")))
     }
 
     fn consume_unit(&mut self, token_type: &TokenType) {
@@ -365,5 +365,6 @@ impl Parser {
 pub enum ParserError {
     None,
     InvalidOperator(String),
-    InvalidExpression(String)
+    InvalidExpression(String),
+    InvalidLiteral(String)
 }
