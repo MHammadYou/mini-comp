@@ -44,7 +44,16 @@ fn main() -> std::io::Result<()> {
                 let tokens = lexer.get_tokens();
     
                 let mut parser = Parser::new(tokens);
-                dbg!(parser.parse_program());
+
+                match parser.parse_program().expr {
+                    Ok(expr) => {
+                        dbg!(expr);
+                    }, 
+                    Err(err) => {
+                        dbg!("Error: ", err);
+                    }
+                }
+
             }
 
 
