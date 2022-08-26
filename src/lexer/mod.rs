@@ -43,14 +43,14 @@ pub struct Punctuation {
     pub kind: PunctuationKind
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum NumericHint {
     Integer,
     FloatingPoint,
     Any
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum OperationKind {
     Plus,
     Minus,
@@ -59,7 +59,7 @@ pub enum OperationKind {
 }
 
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     EOF,
     Punctuation { raw: char, kind: PunctuationKind },
@@ -71,7 +71,7 @@ pub enum TokenType {
     Terminal(String)
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum PunctuationKind {
     Open(BalancingDepthType),
     Close(BalancingDepthType),

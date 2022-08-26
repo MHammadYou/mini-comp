@@ -51,17 +51,8 @@ impl Parser {
                 },
                 None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
             }
-            
-            // Tring to get the actual obj instead of refernce
-            // can't think of anything else right now
-            let operator = match operator {
 
-                // todo: I'll clean this part later
-
-                TokenType::Operations { raw, kind: OperationKind::Plus } => TokenType::Operations { raw: *raw, kind: OperationKind::Plus },
-                TokenType::Operations { raw, kind: OperationKind::Minus } => TokenType::Operations { raw: *raw, kind: OperationKind::Minus },
-                _ => TokenType::EOF
-            };
+            let operator = operator.clone();
 
             let right: Expr;
             match self.parse_factor() {
@@ -107,13 +98,7 @@ impl Parser {
                     },
                     None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
                 }
-                let operator = match operator {
-
-                    TokenType::Operations { raw, kind: OperationKind::Star } => TokenType::Operations { raw: *raw, kind: OperationKind::Star },
-                    TokenType::Operations { raw, kind: OperationKind::Slash } => TokenType::Operations { raw: *raw, kind: OperationKind::Slash },
-                    _ => TokenType::EOF
-
-                };
+                let operator = operator.clone();
 
                 let right: Expr;
                 match self.parse_unary() {
@@ -151,11 +136,7 @@ impl Parser {
                     None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
                 }
 
-                let operator = match operator {
-                    TokenType::Punctuation { raw, kind: PunctuationKind::Bang } => TokenType::Punctuation { raw: *raw, kind: PunctuationKind::Bang },
-                    TokenType::Operations { raw, kind: OperationKind::Minus } => TokenType::Operations { raw: *raw, kind: OperationKind::Minus },
-                    _ => TokenType::EOF
-                };
+                let operator = operator.clone();
 
                 let right: Expr;
                 match self.parse_unary() {
