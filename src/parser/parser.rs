@@ -29,14 +29,10 @@ impl Parser {
 
     fn parse_term(&mut self) -> Result<Expr, ParserError> {
 
-        let mut expr: Expr;
-
-        match self.parse_factor() {
-            Ok(expression) => {
-                expr = expression;
-            },
+        let mut expr = match self.parse_factor() {
+            Ok(expression) => expression,
             Err(err) => return Err(err)
-        }
+        };
 
         while self.match_type(&[
             &TokenType::Operations { raw: '+', kind: OperationKind::Plus }, 
@@ -76,14 +72,11 @@ impl Parser {
     }
 
     fn parse_factor(&mut self) -> Result<Expr, ParserError> {
-        let mut expr: Expr;
 
-        match self.parse_unary() {
-            Ok(expression) => {
-                expr = expression;
-            },
+        let mut expr = match self.parse_unary() {
+            Ok(expression) => expression,
             Err(err) => return Err(err)
-        }
+        };
 
         while self.match_type(&[
             &TokenType::Operations { raw: '*', kind: OperationKind::Star }, 
@@ -244,15 +237,11 @@ impl Parser {
         /*
             Parse Strings
         */
-        let raw: &TokenType;
 
-        match self.peek() {
-            Some(token_type) => {
-                raw = token_type;
-            },
+        let raw = match self.peek() {
+            Some(token_type) => token_type,
             None => return Err(ParserError::InvalidExpression(String::from("Invalid Expression")))
-        }
-
+        };
 
         let raw = match raw {
             TokenType::String(raw) => String::from(&raw[..]),
@@ -269,13 +258,11 @@ impl Parser {
         */
 
         if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::Open(0) }]) {
-            let expr: Expr;
-            match self.parse_expr() {
-                Ok(expression) => {
-                    expr = expression;
-                },
+
+            let expr = match self.parse_expr() {
+                Ok(expression) => expression,
                 Err(err) => return Err(err)
-            }
+            };
 
             self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::Close(0) });
             
