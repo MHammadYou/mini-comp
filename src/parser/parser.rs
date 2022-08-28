@@ -1,5 +1,5 @@
 use super::*;
-use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
+use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, Punctuation };
 use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
 
 
@@ -324,6 +324,31 @@ impl Parser {
                 *token_type == TokenType::EOF
             },
             None => false
+        }
+    }
+
+    fn synchronize(&mut self) {
+        self.advance();
+
+        while !self.end_of_stream() {
+            if let Some(token_type) = self.previous() {
+                match token_type {
+                    TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator } => return,
+                    _ => ()
+                }
+            }
+
+            if let Some(peek) = self.peek() {
+                match peek {
+                    TokenType::Terminal(str) => {
+                        if str == "let" || str == "def" || str == "print" {
+                            return;
+                        }
+                    },
+                    _ => ()
+                }
+            }
+            self.advance();
         }
     }
 }
