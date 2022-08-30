@@ -24,7 +24,7 @@ impl Parser {
     }
 
     pub fn parse_program_(&mut self) -> Vec<Stmt> {
-        let statements = vec![];
+        let mut statements = vec![];
 
         while !self.end_of_stream() {
             statements.push(self.parse_statement());
