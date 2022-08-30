@@ -45,15 +45,8 @@ fn main() -> std::io::Result<()> {
     
                 let mut parser = Parser::new(tokens);
 
-                match parser.parse_program().expr {
-                    Ok(expr) => {
-                        dbg!(expr);
-                    }, 
-                    Err(err) => {
-                        dbg!("Error: ", err);
-                    }
-                }
-
+                let result = parser.parse_program();
+                
             }
 
 

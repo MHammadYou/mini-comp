@@ -2,12 +2,9 @@ use std::any::Any;
 
 use crate::lexer::TokenType;
 
-use super::parser::ParserError;
-
-
 #[derive(Debug)]
 pub struct Program {
-    pub expr: Result<Expr, ParserError>,
+    pub expr: Expr,
 }
 
 impl Program {}

@@ -1,4 +1,4 @@
-use super::*;
+use super::{*, stmt::Stmt};
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
 use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
 
@@ -23,16 +23,45 @@ impl Parser {
         }
     }
 
-    fn parse_expr(&mut self) -> Result<Expr, ParserError> {
+    pub fn parse_program_(&mut self) -> Vec<Stmt> {
+        let statements = vec![];
+
+        while !self.end_of_stream() {
+            statements.push(self.parse_statement());
+        }
+
+        return statements;
+    }
+
+    fn parse_statement(&mut self) -> Stmt {
+        if self.match_type(&[&TokenType::Terminal(String::from("print"))]) {
+            return self.print_statement();
+        }
+        return self.expression_statement();
+    }
+
+    fn print_statement(&mut self) -> Stmt {
+        let expr = self.parse_expr();
+        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator });
+
+        return Stmt::Print(expr);
+
+    }
+
+    fn expression_statement(&mut self) -> Stmt {
+        let expr = self.parse_expr();
+        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator });
+
+        return Stmt::Expression(expr);
+    }
+
+    fn parse_expr(&mut self) -> Expr {
         self.parse_term()
     }
 
-    fn parse_term(&mut self) -> Result<Expr, ParserError> {
+    fn parse_term(&mut self) -> Expr {
 
-        let mut expr = match self.parse_factor() {
-            Ok(expression) => expression,
-            Err(err) => return Err(err)
-        };
+        let mut expr = self.parse_factor();
 
         while self.match_type(&[
             &TokenType::Operations { raw: '+', kind: OperationKind::Plus }, 
@@ -45,18 +74,12 @@ impl Parser {
                 Some(token_type) => {
                     operator = token_type
                 },
-                None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
+                None => ()
             }
 
             let operator = operator.clone();
 
-            let right: Expr;
-            match self.parse_factor() {
-                Ok(expression) => {
-                    right = expression;
-                },
-                Err(err) => return Err(err)
-            }
+            let right = self.parse_factor();
 
             let new_expr = BinaryExpr{
                 left: Box::new(expr),
@@ -68,15 +91,12 @@ impl Parser {
 
         }
 
-        Ok(expr)
+        expr
     }
 
-    fn parse_factor(&mut self) -> Result<Expr, ParserError> {
+    fn parse_factor(&mut self) -> Expr {
 
-        let mut expr = match self.parse_unary() {
-            Ok(expression) => expression,
-            Err(err) => return Err(err)
-        };
+        let mut expr = self.parse_unary();
 
         while self.match_type(&[
             &TokenType::Operations { raw: '*', kind: OperationKind::Star }, 
@@ -89,17 +109,11 @@ impl Parser {
                     Some(token_type) => {
                         operator = token_type
                     },
-                    None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
+                    None => ()
                 }
                 let operator = operator.clone();
 
-                let right: Expr;
-                match self.parse_unary() {
-                    Ok(expression) => {
-                        right = expression;
-                    },
-                    Err(err) => return Err(err)
-                }
+                let right = self.parse_unary();
 
                 let new_expr = BinaryExpr{
                     left: Box::new(expr),
@@ -110,11 +124,11 @@ impl Parser {
                 expr = Expr::BinaryExpr(new_expr)
             }
 
-        Ok(expr)
+        expr
     }
 
 
-    fn parse_unary(&mut self) -> Result<Expr, ParserError> {
+    fn parse_unary(&mut self) -> Expr {
         
         if self.match_type(&[
             &TokenType::Punctuation { raw: '!', kind: PunctuationKind::Bang }, 
@@ -126,31 +140,25 @@ impl Parser {
                     Some(token_type) => {
                         operator = token_type
                     },
-                    None => return Err(ParserError::InvalidOperator(String::from("Invalid Operator")))
+                    None => ()
                 }
 
                 let operator = operator.clone();
 
-                let right: Expr;
-                match self.parse_unary() {
-                    Ok(expression) => {
-                        right = expression;
-                    },
-                    Err(err) => return Err(err)
-                }
+                let right = self.parse_unary();
 
                 let new_expr = UnaryExpr {
                     op: operator,
                     right: Box::new(right)
                 };
 
-                return Ok(Expr::UnaryExpr(new_expr))
+                return Expr::UnaryExpr(new_expr)
             }
         
         self.parse_literal()
     }
 
-    fn parse_literal(&mut self) -> Result<Expr, ParserError> {
+    fn parse_literal(&mut self) -> Expr {
 
 
         /*
@@ -159,17 +167,17 @@ impl Parser {
 
         if self.match_type(&[&TokenType::Terminal(String::from("true"))]) {
             let expr = Literal::Terminal(Terminal{ value: Box::new("true")});
-            return Ok(Expr::Literal(expr))
+            return Expr::Literal(expr)
         }
 
         if self.match_type(&[&TokenType::Terminal(String::from("false"))]) {
             let expr = Literal::Terminal(Terminal{ value: Box::new("false")});
-            return Ok(Expr::Literal(expr))
+            return Expr::Literal(expr)
         }
 
         if self.match_type(&[&TokenType::Terminal(String::from("nil"))]) {
             let expr = Literal::Terminal(Terminal{ value: Box::new("nil")});
-            return Ok(Expr::Literal(expr))
+            return Expr::Literal(expr)
         }
 
 
@@ -192,7 +200,7 @@ impl Parser {
                 Some(token_type) => {
                     token = token_type
                 },
-                None => return Err(ParserError::InvalidExpression(String::from("Invalid Expression")))
+                None => ()
             }
             
             let value_str = match token {
@@ -205,7 +213,7 @@ impl Parser {
 
             self.advance();
 
-            return Ok(Expr::Literal(expr));
+            return Expr::Literal(expr);
         } else if *hint == NumericHint::FloatingPoint {
 
             /*
@@ -217,7 +225,7 @@ impl Parser {
                 Some(token_type) => {
                     token = token_type
                 },
-                None => return Err(ParserError::InvalidExpression(String::from("Invalid Expression")))
+                None => ()
             }
 
             let value_str = match token {
@@ -230,7 +238,7 @@ impl Parser {
 
             self.advance();
 
-            return Ok(Expr::Literal(expr))
+            return Expr::Literal(expr)
         }
 
 
@@ -240,7 +248,7 @@ impl Parser {
 
         let raw = match self.peek() {
             Some(token_type) => token_type,
-            None => return Err(ParserError::InvalidExpression(String::from("Invalid Expression")))
+            None => &TokenType::EOF
         };
 
         let raw = match raw {
@@ -250,7 +258,7 @@ impl Parser {
 
         if self.match_type(&[&TokenType::String(String::from(&raw[..]))]) {
             let expr = Literal::String(String::from(raw));
-            return Ok(Expr::Literal(expr))
+            return Expr::Literal(expr)
         }
 
         /*
@@ -259,18 +267,15 @@ impl Parser {
 
         if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::Open(0) }]) {
 
-            let expr = match self.parse_expr() {
-                Ok(expression) => expression,
-                Err(err) => return Err(err)
-            };
+            let expr = self.parse_expr();
 
             self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::Close(0) });
             
             let expr = Grouping { expr: Box::new(expr) };
-            return Ok(Expr::Grouping(expr))
+            return Expr::Grouping(expr)
         }
 
-        Err(ParserError::InvalidLiteral(String::from("No literal match")))
+        panic!("Invalid Syntax, No literal match");
     }
 
     fn consume_unit(&mut self, token_type: &TokenType) {
@@ -310,7 +315,7 @@ impl Parser {
         self.previous()
     }
 
-    fn peek(&mut self) -> Option<&TokenType> {
+    fn peek(&self) -> Option<&TokenType> {
         self.tokens.get(self.current)
     }
 
@@ -318,7 +323,7 @@ impl Parser {
         self.tokens.get(self.current - 1)
     }
 
-    fn end_of_stream(&mut self) -> bool {
+    fn end_of_stream(&self) -> bool {
         match self.peek() {
             Some(token_type) => {
                 *token_type == TokenType::EOF
