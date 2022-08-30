@@ -68,16 +68,7 @@ impl Parser {
             &TokenType::Operations { raw: '-', kind: OperationKind::Minus }
             ]) {
 
-            let operator: &TokenType;
-
-            match self.previous() {
-                Some(token_type) => {
-                    operator = token_type
-                },
-                None => ()
-            }
-
-            let operator = operator.clone();
+            let operator = self.previous();
 
             let right = self.parse_factor();
 
@@ -103,15 +94,7 @@ impl Parser {
             &TokenType::Operations { raw: '/', kind: OperationKind::Slash }
             ]) {
             
-                let operator: &TokenType;
-
-                match self.previous() {
-                    Some(token_type) => {
-                        operator = token_type
-                    },
-                    None => ()
-                }
-                let operator = operator.clone();
+                let operator = self.previous();
 
                 let right = self.parse_unary();
 
@@ -134,16 +117,7 @@ impl Parser {
             &TokenType::Punctuation { raw: '!', kind: PunctuationKind::Bang }, 
             &TokenType::Operations { raw: '-', kind: OperationKind::Minus }
             ]) {
-                let operator: &TokenType;
-
-                match self.previous() {
-                    Some(token_type) => {
-                        operator = token_type
-                    },
-                    None => ()
-                }
-
-                let operator = operator.clone();
+                let operator = self.previous();
 
                 let right = self.parse_unary();
 
@@ -285,23 +259,19 @@ impl Parser {
         &self.peek() == token_type 
     }
 
-    fn advance(&mut self) -> Option<&TokenType> {
+    fn advance(&mut self) -> TokenType {
         if !self.end_of_stream() {
             self.current += 1;
         }
         self.previous()
     }
 
-    // fn peek(&self) -> Option<&TokenType> {
-    //     self.tokens.get(self.current)
-    // }
-
     fn peek(&self) -> TokenType {
         self.tokens[self.current].clone()
     }
 
-    fn previous(&mut self) -> Option<&TokenType> {
-        self.tokens.get(self.current - 1)
+    fn previous(&mut self) -> TokenType {
+        self.tokens[self.current - 1].clone()
     }
 
     fn end_of_stream(&self) -> bool {
@@ -312,11 +282,9 @@ impl Parser {
         self.advance();
 
         while !self.end_of_stream() {
-            if let Some(token_type) = self.previous() {
-                match token_type {
-                    TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator } => return,
-                    _ => ()
-                }
+            match self.previous() {
+                TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator } => return,
+                _ => ()
             }
 
             match self.peek() {
