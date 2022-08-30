@@ -186,22 +186,13 @@ impl Parser {
         */
 
         let hint = match self.peek() {
-            Some(token_type) => match token_type {
                 TokenType::Numeric { raw: _, hint } => hint,
-                _ => &NumericHint::Any
-            },
-            None => &NumericHint::Any,
+                _ => NumericHint::Any
         };
 
-        if *hint == NumericHint::Integer {
+        if hint == NumericHint::Integer {
 
-            let token: &TokenType;
-            match self.peek() {
-                Some(token_type) => {
-                    token = token_type
-                },
-                None => ()
-            }
+            let token = self.peek();
             
             let value_str = match token {
                 TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
@@ -214,19 +205,13 @@ impl Parser {
             self.advance();
 
             return Expr::Literal(expr);
-        } else if *hint == NumericHint::FloatingPoint {
+        } else if hint == NumericHint::FloatingPoint {
 
             /*
                 Parse Floats
             */
 
-            let token: &TokenType;
-            match self.peek() {
-                Some(token_type) => {
-                    token = token_type
-                },
-                None => ()
-            }
+            let token = self.peek();
 
             let value_str = match token {
                 TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
@@ -246,10 +231,7 @@ impl Parser {
             Parse Strings
         */
 
-        let raw = match self.peek() {
-            Some(token_type) => token_type,
-            None => &TokenType::EOF
-        };
+        let raw = self.peek();
 
         let raw = match raw {
             TokenType::String(raw) => String::from(&raw[..]),
@@ -300,12 +282,7 @@ impl Parser {
         if self.end_of_stream() {
             return false
         } 
-        match self.peek() {
-            Some(token) => {
-                token == token_type 
-            },
-            None => false
-        }
+        &self.peek() == token_type 
     }
 
     fn advance(&mut self) -> Option<&TokenType> {
@@ -315,8 +292,12 @@ impl Parser {
         self.previous()
     }
 
-    fn peek(&self) -> Option<&TokenType> {
-        self.tokens.get(self.current)
+    // fn peek(&self) -> Option<&TokenType> {
+    //     self.tokens.get(self.current)
+    // }
+
+    fn peek(&self) -> TokenType {
+        self.tokens[self.current].clone()
     }
 
     fn previous(&mut self) -> Option<&TokenType> {
@@ -324,12 +305,7 @@ impl Parser {
     }
 
     fn end_of_stream(&self) -> bool {
-        match self.peek() {
-            Some(token_type) => {
-                *token_type == TokenType::EOF
-            },
-            None => false
-        }
+        self.peek() == TokenType::EOF
     }
 
     fn synchronize(&mut self) {
@@ -343,15 +319,13 @@ impl Parser {
                 }
             }
 
-            if let Some(peek) = self.peek() {
-                match peek {
-                    TokenType::Terminal(str) => {
-                        if str == "let" || str == "def" || str == "print" {
-                            return;
-                        }
-                    },
-                    _ => ()
-                }
+            match self.peek() {
+                TokenType::Terminal(str) => {
+                    if str == "let" || str == "def" || str == "print" {
+                        return;
+                    }
+                },
+                _ => ()
             }
             self.advance();
         }
