@@ -1,8 +1,4 @@
 
-{
-    22.2 55;
-    ([[]()](()));
-    print("Hello, World!");
-    let x = 10;
-    5 + 5
-}
+
+print "Hello, World!";
+print 3 + 9;

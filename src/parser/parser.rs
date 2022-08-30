@@ -1,6 +1,6 @@
 use super::{*, stmt::Stmt};
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
-use parser::ast::{ Program, Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
+use parser::ast::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
 
 
 pub struct Parser {
@@ -16,14 +16,7 @@ impl Parser {
         }
     }
 
-    pub fn parse_program(&mut self) -> Program {
-
-        Program {
-            expr: self.parse_expr()
-        }
-    }
-
-    pub fn parse_program_(&mut self) -> Vec<Stmt> {
+    pub fn parse_program(&mut self) -> Vec<Stmt> {
         let mut statements = vec![];
 
         while !self.end_of_stream() {

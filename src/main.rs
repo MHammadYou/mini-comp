@@ -45,8 +45,9 @@ fn main() -> std::io::Result<()> {
     
                 let mut parser = Parser::new(tokens);
 
-                let result = parser.parse_program();
+                let statements = parser.parse_program();
                 
+                println!("{:#?}", statements);
             }
 
 

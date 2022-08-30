@@ -1,20 +1,23 @@
 
 
-program    = statement* EOF
+program     = declaration* EOF
 
-statement  = exprStmt | printStmt
+declaration = varDecl | statement
 
-exprStmt   = expression ";"
-printStmt  = "print" expression ";"
+statement   = exprStmt | printStmt
 
-expression = term
+exprStmt    = expression ";"
+printStmt   = "print" expression ";"
 
-term       = factor ( ( "-" | "+" ) factor )* 
+expression  = term
 
-factor     = unary ( ( "/" | "*" ) unary )* 
+term        = factor ( ( "-" | "+" ) factor )* 
 
-unary      = ( "!" | "-" ) unary 
+factor      = unary ( ( "/" | "*" ) unary )* 
+
+unary       = ( "!" | "-" ) unary 
                 | literal
 
-literal    = NUMERIC | STRING | TERMINAL 
+literal     = NUMERIC | STRING | TERMINAL 
                 | "(" expression ")"
+                | IDENTIFIER
