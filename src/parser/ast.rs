@@ -7,8 +7,6 @@ pub struct Program {
     pub expr: Expr,
 }
 
-impl Program {}
-
 
 #[derive(Debug)]
 pub enum Literal {
@@ -19,8 +17,10 @@ pub enum Literal {
     Terminal(Terminal)
 }
 
-
-impl Literal {}
+#[derive(Debug)]
+pub struct Terminal {
+    pub value: Box<dyn Any>
+}
 
 
 #[derive(Debug)]
@@ -28,15 +28,11 @@ pub struct Grouping {
     pub expr: Box<Expr>
 }
 
-impl Grouping {}
-
 #[derive(Debug)]
 pub struct UnaryExpr {
     pub op: TokenType,
     pub right: Box<Expr>,
 }
-
-impl UnaryExpr {}
 
 
 #[derive(Debug)]
@@ -46,21 +42,14 @@ pub struct BinaryExpr {
     pub right: Box<Expr>
 }
 
-impl BinaryExpr {}
-
 
 #[derive(Debug)]
 pub enum Expr {
     BinaryExpr(BinaryExpr),
     UnaryExpr(UnaryExpr),
     Grouping(Grouping),
-    Literal(Literal)
+    Literal(Literal),
+    Variable(TokenType)
 }
 
-impl Expr {}
 
-
-#[derive(Debug)]
-pub struct Terminal {
-    pub value: Box<dyn Any>
-}

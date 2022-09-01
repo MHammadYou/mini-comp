@@ -2,7 +2,7 @@
 
 program     = declaration* EOF
 
-declaration = varDecl | statement
+declaration = letDecl | statement
 
 statement   = exprStmt | printStmt
 

@@ -20,11 +20,36 @@ impl Parser {
         let mut statements = vec![];
 
         while !self.end_of_stream() {
-            statements.push(self.parse_statement());
+            statements.push(self.parse_declaration());
         }
 
         return statements;
     }
+
+    fn parse_declaration(&mut self) -> Stmt {
+
+        if self.match_type(&[&TokenType::Terminal(String::from("let"))]) {
+            return self.let_declaration();
+        }
+        return self.parse_statement();
+    }
+
+    fn let_declaration(&mut self) -> Stmt {
+        let ident: String = match self.peek() {
+            TokenType::Identifier(value) => value,
+            _ => String::from("Invalid")
+        };
+        let name = self.consume_unit(&TokenType::Identifier(ident));
+
+        if self.match_type(&[&TokenType::Punctuation { raw: '=', kind: PunctuationKind::Equal }]) {
+            let initilizer = self.parse_expr();
+            self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator });
+            return Stmt::Let { token: name, initilizer }
+        }
+        panic!("Invalid statement, Expected '=' after variable name")
+
+    }
+
 
     fn parse_statement(&mut self) -> Stmt {
         if self.match_type(&[&TokenType::Terminal(String::from("print"))]) {
@@ -147,6 +172,15 @@ impl Parser {
             return Expr::Literal(expr)
         }
 
+        let value = match self.peek() {
+            TokenType::Identifier(value) => value,
+            _ => String::from("Invalid")
+        };
+
+        if self.match_type(&[&TokenType::Identifier(value)]) {
+            return Expr::Variable(self.previous())
+        }
+
 
         /*
             Parse Numerics
@@ -227,10 +261,9 @@ impl Parser {
         panic!("Invalid Syntax, No literal match");
     }
 
-    fn consume_unit(&mut self, token_type: &TokenType) {
+    fn consume_unit(&mut self, token_type: &TokenType) -> TokenType {
         if self.check_type(token_type) {
-            self.advance();
-            return;
+            return self.advance();
         }
         panic!("Invalid syntax, Expected )");
     }
