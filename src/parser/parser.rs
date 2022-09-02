@@ -39,11 +39,11 @@ impl Parser {
             TokenType::Identifier(value) => value,
             _ => String::from("Invalid")
         };
-        let name = self.consume_unit(&TokenType::Identifier(ident));
+        let name = self.consume_unit(&TokenType::Identifier(ident), "Expected variable name after let");
 
         if self.match_type(&[&TokenType::Punctuation { raw: '=', kind: PunctuationKind::Equal }]) {
             let initilizer = self.parse_expr();
-            self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator });
+            self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ; after expression");
             return Stmt::Let { token: name, initilizer }
         }
         panic!("Invalid statement, Expected '=' after variable name")
@@ -60,7 +60,7 @@ impl Parser {
 
     fn print_statement(&mut self) -> Stmt {
         let expr = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator });
+        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ; after expresion");
 
         return Stmt::Print(expr);
 
@@ -68,7 +68,7 @@ impl Parser {
 
     fn expression_statement(&mut self) -> Stmt {
         let expr = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator });
+        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ; after expression");
 
         return Stmt::Expression(expr);
     }
@@ -252,7 +252,7 @@ impl Parser {
 
             let expr = self.parse_expr();
 
-            self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::Close(0) });
+            self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::Close(0) }, "Expected )");
             
             let expr = Grouping { expr: Box::new(expr) };
             return Expr::Grouping(expr)
@@ -261,11 +261,11 @@ impl Parser {
         panic!("Invalid Syntax, No literal match");
     }
 
-    fn consume_unit(&mut self, token_type: &TokenType) -> TokenType {
+    fn consume_unit(&mut self, token_type: &TokenType, message: &str) -> TokenType {
         if self.check_type(token_type) {
             return self.advance();
         }
-        panic!("Invalid syntax, Expected )");
+        panic!("Invalid syntax, {}", message);
     }
 
     fn match_type(&mut self, types: &[&TokenType]) -> bool {
