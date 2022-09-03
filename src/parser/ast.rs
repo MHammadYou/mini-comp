@@ -42,6 +42,12 @@ pub struct BinaryExpr {
     pub right: Box<Expr>
 }
 
+#[derive(Debug)]
+pub struct AssignExpr {
+    pub name: TokenType,
+    pub value: Box<Expr>
+}
+
 
 #[derive(Debug)]
 pub enum Expr {
@@ -49,7 +55,8 @@ pub enum Expr {
     UnaryExpr(UnaryExpr),
     Grouping(Grouping),
     Literal(Literal),
-    Variable(TokenType)
+    Variable(TokenType),
+    Assign(AssignExpr)
 }
 
 

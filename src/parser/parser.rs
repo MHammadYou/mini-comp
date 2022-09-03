@@ -1,4 +1,4 @@
-use super::{*, stmt::Stmt};
+use super::{*, stmt::Stmt, ast::AssignExpr};
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
 use parser::ast::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
 
@@ -74,7 +74,27 @@ impl Parser {
     }
 
     fn parse_expr(&mut self) -> Expr {
-        self.parse_term()
+        self.parse_assignment()
+    }
+
+    fn parse_assignment(&mut self) -> Expr {
+
+        let expr = self.parse_term();
+
+        if self.match_type(&[&TokenType::Punctuation { raw: '=', kind: PunctuationKind::Equal }]) {
+            let value = self.parse_assignment();
+
+            match expr {
+                Expr::Variable(ident_name) => {
+                    let name = ident_name;
+                    let new_expr = AssignExpr{ name, value: Box::new(value) };
+                    return Expr::Assign(new_expr)
+                },
+                _ => ()
+            }
+        }
+        expr
+
     }
 
     fn parse_term(&mut self) -> Expr {
@@ -324,13 +344,4 @@ impl Parser {
             self.advance();
         }
     }
-}
-
-
-#[derive(Debug)]
-pub enum ParserError {
-    None,
-    InvalidOperator(String),
-    InvalidExpression(String),
-    InvalidLiteral(String)
 }

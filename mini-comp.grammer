@@ -9,7 +9,9 @@ statement   = exprStmt | printStmt
 exprStmt    = expression ";"
 printStmt   = "print" expression ";"
 
-expression  = term
+expression  = assignment
+
+assignment  = IDENTIFIER "=" assignment | term
 
 term        = factor ( ( "-" | "+" ) factor )* 
 
