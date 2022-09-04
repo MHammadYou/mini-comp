@@ -4,3 +4,4 @@ print "Hello, World!";
 print 3 + 9;
 let x = "Hello, World!";
 x = 5;
+print x;

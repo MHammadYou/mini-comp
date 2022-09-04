@@ -46,7 +46,7 @@ impl Parser {
             self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ; after expression");
             return Stmt::Let { token: name, initilizer }
         }
-        panic!("Invalid statement, Expected '=' after variable name")
+        panic!("Invalid syntax, Expected '=' after variable name")
 
     }
 
