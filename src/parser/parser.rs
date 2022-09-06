@@ -55,7 +55,23 @@ impl Parser {
         if self.match_type(&[&TokenType::Terminal(String::from("print"))]) {
             return self.print_statement();
         }
+        if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::Open(0) }]) {
+            return Stmt::Block { statements: self.parse_block() }
+        }
+
         return self.expression_statement();
+    }
+
+    fn parse_block(&mut self) -> Vec<Stmt> {
+        let mut statements = vec![];
+
+        while !self.check_type(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::Close(0) }) && !self.end_of_stream() {
+            statements.push(self.parse_declaration());
+        }
+
+        self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::Close(0) }, "Expected '}' after block");
+
+        statements
     }
 
     fn print_statement(&mut self) -> Stmt {

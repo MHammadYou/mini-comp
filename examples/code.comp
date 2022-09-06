@@ -5,3 +5,8 @@ print 3 + 9;
 let x = "Hello, World!";
 x = 5;
 print x;
+
+{
+    let abc = "This is a string";
+    print abc;
+}
