@@ -73,12 +73,9 @@ pub enum TokenType {
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum PunctuationKind {
-    Open(BalancingDepthType),
-    Close(BalancingDepthType),
+    Open,
+    Close,
     Separator,
     Equal,
     Bang // !
 }
-
-type BalancingDepthType = i32;
-

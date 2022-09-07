@@ -9,7 +9,6 @@ pub struct Lexer<'a> {
 
     pub codepoint_offset: usize,
     chars: std::iter::Peekable<std::str::Chars<'a>>,
-    balancing_state: std::collections::HashMap<char, BalancingDepthType>,
 }
 
 macro_rules! try_consume {
@@ -41,7 +40,6 @@ impl<'a> Lexer<'a> {
             cur_col: 1,
             codepoint_offset: 0,
             chars: chars.chars().peekable(),
-            balancing_state: std::collections::HashMap::new(),
         }
     }
 
@@ -71,28 +69,28 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn push_symbol(&mut self, c: &char) -> BalancingDepthType {
-        if let Some(v) = self.balancing_state.get_mut(&c) {
-            *v += 1;
-            *v - 1
-        } else {
-            self.balancing_state.insert(*c, 1);
-            0
-        }
-    }
+    // fn push_symbol(&mut self, c: &char) -> BalancingDepthType {
+    //     if let Some(v) = self.balancing_state.get_mut(&c) {
+    //         *v += 1;
+    //         *v - 1
+    //     } else {
+    //         self.balancing_state.insert(*c, 1);
+    //         0
+    //     }
+    // }
     
-    fn pop_symbol(&mut self, c: &char) -> Result<BalancingDepthType, LexerError> {
-        if let Some(v) = self.balancing_state.get_mut(&Lexer::map_balance(&c)) {
-            if *v >= 1 {
-                *v -= 1;
-                Ok(*v)
-            } else {
-                Err(LexerError::MissingBalancedSymbol { symbol: *c, open: Lexer::map_balance(&c) })
-            }
-        } else {
-            Err(LexerError::MissingBalancedSymbol { symbol: *c, open: Lexer::map_balance(&c) })
-        }
-    }
+    // fn pop_symbol(&mut self, c: &char) -> Result<BalancingDepthType, LexerError> {
+    //     if let Some(v) = self.balancing_state.get_mut(&Lexer::map_balance(&c)) {
+    //         if *v >= 1 {
+    //             *v -= 1;
+    //             Ok(*v)
+    //         } else {
+    //             Err(LexerError::MissingBalancedSymbol { symbol: *c, open: Lexer::map_balance(&c) })
+    //         }
+    //     } else {
+    //         Err(LexerError::MissingBalancedSymbol { symbol: *c, open: Lexer::map_balance(&c) })
+    //     }
+    // }
 
     fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
         let mut raw = start.to_string();
@@ -175,8 +173,8 @@ impl<'a> Lexer<'a> {
 
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
         match c {
-            '(' | '[' | '{' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open(self.push_symbol(&c)) }),
-            ')' | ']' | '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close(self.pop_symbol(&c)?) }),
+            '(' | '[' | '{' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open }),
+            ')' | ']' | '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close }),
             '0' ..= '9' | '.' => self.parse_numbers(c),
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
             '!' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Bang }),

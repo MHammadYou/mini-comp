@@ -55,7 +55,7 @@ impl Parser {
         if self.match_type(&[&TokenType::Terminal(String::from("print"))]) {
             return self.print_statement();
         }
-        if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::Open(0) }]) {
+        if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::Open }]) {
             return Stmt::Block { statements: self.parse_block() }
         }
 
@@ -65,11 +65,11 @@ impl Parser {
     fn parse_block(&mut self) -> Vec<Stmt> {
         let mut statements = vec![];
 
-        while !self.check_type(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::Close(0) }) && !self.end_of_stream() {
+        while !self.check_type(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::Close }) && !self.end_of_stream() {
             statements.push(self.parse_declaration());
         }
 
-        self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::Close(0) }, "Expected '}' after block");
+        self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::Close }, "Expected '}' after block");
 
         statements
     }
@@ -284,11 +284,11 @@ impl Parser {
             Parse Grouping ()
         */
 
-        if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::Open(0) }]) {
+        if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::Open }]) {
 
             let expr = self.parse_expr();
 
-            self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::Close(0) }, "Expected )");
+            self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::Close }, "Expected )");
             
             let expr = Grouping { expr: Box::new(expr) };
             return Expr::Grouping(expr)
