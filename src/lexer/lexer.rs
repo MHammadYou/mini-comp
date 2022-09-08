@@ -57,41 +57,6 @@ impl<'a> Lexer<'a> {
         tokens
     }
 
-    fn map_balance(c: &char) -> char {
-        match c {
-            '(' => ')',
-            ')' => '(',
-            '{' => '}',
-            '}' => '{',
-            '[' => ']',
-            ']' => '[',
-            _ => panic!("Invalid symbol")
-        }
-    }
-
-    // fn push_symbol(&mut self, c: &char) -> BalancingDepthType {
-    //     if let Some(v) = self.balancing_state.get_mut(&c) {
-    //         *v += 1;
-    //         *v - 1
-    //     } else {
-    //         self.balancing_state.insert(*c, 1);
-    //         0
-    //     }
-    // }
-    
-    // fn pop_symbol(&mut self, c: &char) -> Result<BalancingDepthType, LexerError> {
-    //     if let Some(v) = self.balancing_state.get_mut(&Lexer::map_balance(&c)) {
-    //         if *v >= 1 {
-    //             *v -= 1;
-    //             Ok(*v)
-    //         } else {
-    //             Err(LexerError::MissingBalancedSymbol { symbol: *c, open: Lexer::map_balance(&c) })
-    //         }
-    //     } else {
-    //         Err(LexerError::MissingBalancedSymbol { symbol: *c, open: Lexer::map_balance(&c) })
-    //     }
-    // }
-
     fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
         let mut raw = start.to_string();
         let radix = 10;
