@@ -138,8 +138,10 @@ impl<'a> Lexer<'a> {
 
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
         match c {
-            '(' | '[' | '{' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Open }),
-            ')' | ']' | '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Close }),
+            '(' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::OpenParen }),
+            ')' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::CloseParen }),
+            '{' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::OpenCurly }),
+            '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::CloseCurly }),
             '0' ..= '9' | '.' => self.parse_numbers(c),
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
             '!' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Bang }),

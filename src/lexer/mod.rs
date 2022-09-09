@@ -75,6 +75,10 @@ pub enum TokenType {
 pub enum PunctuationKind {
     Open,
     Close,
+    OpenParen,
+    CloseParen,
+    OpenCurly,
+    CloseCurly,
     Separator,
     Equal,
     Bang // !
