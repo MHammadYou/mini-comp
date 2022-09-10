@@ -4,9 +4,11 @@ program     = declaration* EOF
 
 declaration = letDecl | statement
 
-statement   = exprStmt | printStmt | block
+statement   = exprStmt | printStmt | block | ifStmt
 
 block       = "{" declaration "}"
+
+ifStmt      = "if" "(" statement ")" block ( "else" block )?          
 
 exprStmt    = expression ";"
 printStmt   = "print" expression ";"

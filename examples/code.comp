@@ -2,11 +2,11 @@
 
 print "Hello, World!";
 print 3 + 9;
-let x = "Hello, World!";
-x = 5;
+let x = 12;
+x = -10;
 print x;
 
 {
-    let abc = "This is a string";
-    print abc;
+    let str = "Yey!...";
+    print str;
 }

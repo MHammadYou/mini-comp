@@ -69,7 +69,8 @@ impl Parser {
             statements.push(self.parse_declaration());
         }
 
-        self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }, "Expected '}' after block");
+        self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }, 
+            "Expected '}' after block");
 
         statements
     }
