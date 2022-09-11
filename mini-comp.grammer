@@ -8,7 +8,7 @@ statement   = exprStmt | printStmt | block | ifStmt
 
 block       = "{" declaration "}"
 
-ifStmt      = "if" "(" statement ")" block ( "else" block )?          
+ifStmt      = "if" "(" statement ")" statement ( "else" statement )?          
 
 exprStmt    = expression ";"
 printStmt   = "print" expression ";"
