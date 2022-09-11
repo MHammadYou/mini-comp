@@ -6,5 +6,7 @@ pub enum Stmt {
     Block{ statements: Vec<Stmt> },
     Expression(Expr),
     Print(Expr),
-    Let{ token: TokenType, initilizer: Expr }
+    Let{ token: TokenType, initilizer: Expr },
+    If{ condition: Expr, then_branch: Box<Stmt>, else_branch: Box<Stmt> }
 }
+
