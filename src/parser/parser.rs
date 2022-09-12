@@ -55,11 +55,25 @@ impl Parser {
         if self.match_type(&[&TokenType::Terminal(String::from("print"))]) {
             return self.print_statement();
         }
+
+        if self.match_type(&[&TokenType::Terminal(String::from("if"))]) {
+            return self.if_statement();
+        }
+
         if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }]) {
             return Stmt::Block { statements: self.parse_block() }
         }
 
         return self.expression_statement();
+    }
+
+    fn if_statement(&mut self) -> Stmt {
+        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after if");
+        let condition = self.parse_expr();
+        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after if condition");
+    
+        let then_branch = self.parse_statement();
+        
     }
 
     fn parse_block(&mut self) -> Vec<Stmt> {
