@@ -7,6 +7,6 @@ pub enum Stmt {
     Expression(Expr),
     Print(Expr),
     Let{ token: TokenType, initilizer: Expr },
-    If{ condition: Expr, then_branch: Box<Stmt>, else_branch: Box<Stmt> }
+    If{ condition: Expr, branch: Box<Stmt> }
 }
 
