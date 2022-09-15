@@ -73,6 +73,8 @@ impl Parser {
         self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after if condition");
     
         let branch = self.parse_statement();
+
+        Stmt::If { condition, branch: Box::new(branch) }
         
     }
 
