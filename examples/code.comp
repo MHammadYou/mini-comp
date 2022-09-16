@@ -10,3 +10,7 @@ print x;
     let str = "Yey!...";
     print str;
 }
+
+if (true) {
+    print "If Condition Block";
+}
