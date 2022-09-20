@@ -60,6 +60,10 @@ impl Parser {
             return self.if_statement();
         }
 
+        if self.match_type(&[&TokenType::Terminal(String::from("while"))]) {
+            return self.while_statement();
+        }
+
         if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }]) {
             return Stmt::Block { statements: self.parse_block() }
         }
@@ -67,10 +71,19 @@ impl Parser {
         return self.expression_statement();
     }
 
+    fn while_statement(&mut self) -> Stmt {
+        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after while");    
+        let condition = self.parse_expr();
+        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after expression");
+
+        let statment = self.parse_statement();
+        Stmt::While { condition, body: Box::new(statment) }
+    }
+
     fn if_statement(&mut self) -> Stmt {
         self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after if");
         let condition = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after if condition");
+        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after expression");
     
         let branch = self.parse_statement();
 
