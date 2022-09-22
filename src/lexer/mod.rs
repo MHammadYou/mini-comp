@@ -55,7 +55,17 @@ pub enum OperationKind {
     Plus,
     Minus,
     Star,
-    Slash
+    Slash,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub enum OperatorKind {
+    Greater,
+    GreaterEqual,
+    Less,
+    LessEqual,
+    EqualEqual,
+    BangEqual
 }
 
 
@@ -64,6 +74,7 @@ pub enum TokenType {
     EOF,
     Punctuation { raw: char, kind: PunctuationKind },
     Operations{ raw: char, kind: OperationKind },
+    Operator(OperatorKind),
     Identifier(String),
     Char(char),
     Numeric{ raw: String, hint: NumericHint },

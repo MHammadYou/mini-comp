@@ -136,6 +136,15 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    fn check_next(&mut self, next: char) -> bool {
+        match self.chars.next() {
+            Some(c) => {
+                c == next
+            },
+            None => false
+        }
+    }
+
     fn transform_to_type(&mut self, c: char) -> Result<TokenType, LexerError> {
         match c {
             '(' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::OpenParen }),
@@ -144,13 +153,37 @@ impl<'a> Lexer<'a> {
             '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::CloseCurly }),
             '0' ..= '9' | '.' => self.parse_numbers(c),
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
-            '!' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Bang }),
-            '=' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal }),
+            '!' => {
+                if self.check_next('=') {
+                    return Ok(TokenType::Operator(OperatorKind::BangEqual))
+                }
+                Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Bang })
+            },
+            '=' => {
+                if self.check_next('=') {
+                    return Ok(TokenType::Operator(OperatorKind::EqualEqual))
+                }
+                Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal })
+            },
 
             '+' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Plus }),
             '-' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Minus }),
             '*' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Star }),
             '/' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Slash }),
+
+            '<' => {
+                if self.check_next('=') {
+                    return Ok(TokenType::Operator(OperatorKind::LessEqual))
+                }
+                Ok(TokenType::Operator(OperatorKind::Less))
+            },
+            '>' => {
+                if self.check_next('=') {
+                    return Ok(TokenType::Operator(OperatorKind::GreaterEqual))
+                }
+                Ok(TokenType::Operator(OperatorKind::Greater))
+            }
+
 
             '"' => self.parse_string(),
             c if c.is_alphanumeric() || c == '_' => Ok(self.parse_identifiers_or_terminals(c)),
