@@ -1,5 +1,5 @@
 use super::{*, stmt::Stmt, ast::AssignExpr};
-use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint };
+use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
 use parser::ast::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
 
 
@@ -125,7 +125,7 @@ impl Parser {
 
     fn parse_assignment(&mut self) -> Expr {
 
-        let expr = self.parse_term();
+        let expr = self.parse_equality();
 
         if self.match_type(&[&TokenType::Punctuation { raw: '=', kind: PunctuationKind::Equal }]) {
             let value = self.parse_assignment();
@@ -141,6 +141,54 @@ impl Parser {
         }
         expr
 
+    }
+
+    fn parse_equality(&mut self) -> Expr {
+        let mut expr = self.parse_comparison();
+
+        while self.match_type(&[
+            &TokenType::Operator(OperatorKind::BangEqual),
+            &TokenType::Operator(OperatorKind::EqualEqual)
+        ]) {
+            let operator = self.previous();
+
+            let right = self.parse_comparison();
+
+            let new_expr = BinaryExpr{
+                left: Box::new(expr),
+                op: operator,
+                right: Box::new(right)
+            };
+
+            expr = Expr::BinaryExpr(new_expr)
+        }
+
+        expr
+    }
+
+    fn parse_comparison(&mut self) -> Expr {
+        let mut expr = self.parse_term();
+
+        while self.match_type(&[
+            &TokenType::Operator(OperatorKind::Greater),
+            &TokenType::Operator(OperatorKind::GreaterEqual),
+            &TokenType::Operator(OperatorKind::Less),
+            &TokenType::Operator(OperatorKind::LessEqual),
+        ]) {
+            let operator = self.previous();
+
+            let right = self.parse_term();
+
+            let new_expr = BinaryExpr{
+                left: Box::new(expr),
+                op: operator,
+                right: Box::new(right)
+            };
+
+            expr = Expr::BinaryExpr(new_expr)
+        }
+
+        expr
     }
 
     fn parse_term(&mut self) -> Expr {
