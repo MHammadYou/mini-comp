@@ -8,12 +8,17 @@ statement   = exprStmt |
                 printStmt |
                 block | 
                 ifStmt | 
-                whileStmt
+                whileStmt |
+                forStmt
 
 block       = "{" declaration "}"
 
 ifStmt      = "if" "(" statement ")" statement
-whileStmt   = "while" "(" expression ")" statement         
+whileStmt   = "while" "(" expression ")" statement      
+forStmt     = "for" "(" 
+                ( letDecl | exprStmt | ";" )
+                 expression? ";" 
+                 expression? ")" statement ;   
 
 exprStmt    = expression ";"
 printStmt   = "print" expression ";"
