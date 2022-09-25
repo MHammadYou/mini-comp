@@ -64,11 +64,41 @@ impl Parser {
             return self.while_statement();
         }
 
+        if self.match_type(&[&TokenType::Terminal(String::from("for"))]) {
+            return self.for_statement();
+        }
+
         if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }]) {
             return Stmt::Block { statements: self.parse_block() }
         }
 
         return self.expression_statement();
+    }
+
+    fn for_statement(&mut self) -> Stmt {
+
+        // TODO: Fix 
+
+        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after for");    
+
+        let initilizer: Stmt;
+        if self.match_type(&[&TokenType::Terminal(String::from("let"))]) {
+            initilizer = self.let_declaration();
+        } else {
+            initilizer = self.expression_statement();
+        }
+
+        let condition = self.parse_expr();
+        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ';' after for loop condition");
+
+        let change = self.parse_expr();
+        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ';' after for loop condition");
+
+        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected ')' after for");    
+
+        let body = self.parse_statement();
+        let statement = Stmt::Block { statements: vec![initilizer, body] };
+        statement
     }
 
     fn while_statement(&mut self) -> Stmt {
