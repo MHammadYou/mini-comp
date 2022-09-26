@@ -3,6 +3,7 @@ debug/
 **/*.rs.bk
 *.pdb
 run.bat
+desktop.ini
 
 
 # User-specific stuff
