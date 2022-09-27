@@ -92,9 +92,8 @@ impl Parser {
         self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ';' after for loop condition");
 
         let change = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ';' after for loop condition");
 
-        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected ')' after for");    
+        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after for");    
 
         let body = self.parse_statement();
         let statement = Stmt::Block { statements: vec![initilizer, body] };
