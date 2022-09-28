@@ -1,5 +1,3 @@
-extern crate lazy_static;
-
 use crate::lexer::*;
 
 #[derive(Debug, Clone)]

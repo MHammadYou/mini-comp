@@ -77,8 +77,6 @@ impl Parser {
 
     fn for_statement(&mut self) -> Stmt {
 
-        // TODO: Fix 
-
         self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after for");    
 
         let initilizer: Stmt;
@@ -88,10 +86,10 @@ impl Parser {
             initilizer = self.expression_statement();
         }
 
-        let condition = self.parse_expr();
+        let _condition = self.parse_expr();
         self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ';' after for loop condition");
 
-        let change = self.parse_expr();
+        let _change = self.parse_expr();
 
         self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after for");    
 
