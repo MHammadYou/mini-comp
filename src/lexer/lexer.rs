@@ -1,12 +1,14 @@
+use std::collections::HashMap;
+
 use crate::lexer::*;
 
 #[derive(Debug, Clone)]
 pub struct Lexer<'a> {
     pub cur_line: usize,
     pub cur_col: usize,
-
     pub codepoint_offset: usize,
     chars: std::iter::Peekable<std::str::Chars<'a>>,
+    keywords: HashMap<String, TokenType>
 }
 
 macro_rules! try_consume {
@@ -38,6 +40,18 @@ impl<'a> Lexer<'a> {
             cur_col: 1,
             codepoint_offset: 0,
             chars: chars.chars().peekable(),
+            
+            keywords: HashMap::from([
+                (String::from("true"), TokenType::Terminal(String::from("true"))),
+                (String::from("false"), TokenType::Terminal(String::from("false"))),
+                (String::from("let"), TokenType::Terminal(String::from("let"))),
+                (String::from("def"), TokenType::Terminal(String::from("def"))),
+                (String::from("print"), TokenType::Terminal(String::from("print"))),
+                (String::from("nil"), TokenType::Terminal(String::from("nil"))),
+                (String::from("if"), TokenType::Terminal(String::from("if"))),
+                (String::from("while"), TokenType::Terminal(String::from("wjile"))),
+                (String::from("for"), TokenType::Terminal(String::from("for"))),
+            ])
         }
     }
 
