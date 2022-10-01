@@ -89,7 +89,7 @@ impl<'a> Lexer<'a> {
             }
         } else {
             println!("Compiler bug if this line hits");
-            return Err(LexerError::NumericLiteralInvalidChar { raw, invalid: start})
+            return Err(LexerError::NumericLiteralInvalidChar { raw, invalid: start })
         }
 
         Ok(TokenType::Numeric { raw, hint })
@@ -138,15 +138,6 @@ impl<'a> Lexer<'a> {
     }
 
     fn tag_identifier(&self, ident: String) -> TokenType {
-        // if match ident.as_ref() {
-        //     "false" | "true"` | "let" | "def" | "print" | "nil" | "if" | "while" | "for"  => true,
-        //     _ => false
-        // } {
-        //     TokenType::Terminal(ident)
-        // } else {
-        //     TokenType::wIdentifier(ident)
-        // }
-
         match self.keywords.get(&ident) {
             Some(_) => TokenType::Terminal(ident),
             None => TokenType::Identifier(ident)
