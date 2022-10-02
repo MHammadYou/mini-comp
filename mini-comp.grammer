@@ -1,43 +1,45 @@
 
 
-program     = declaration* EOF
+program       = declaration* EOF
 
-declaration = letDecl | statement
+declaration   = letDecl | statement
 
-statement   = exprStmt | 
-                printStmt |
-                block | 
-                ifStmt | 
-                whileStmt |
-                forStmt
+statement     = exprStmt | 
+                  printStmt |
+                  block | 
+                  ifStmt | 
+                  whileStmt |
+                  forStmt
 
-block       = "{" declaration "}"
+block         = "{" declaration "}"
 
-ifStmt      = "if" "(" statement ")" statement
-whileStmt   = "while" "(" expression ")" statement      
-forStmt     = "for" "(" 
-                ( letDecl | exprStmt )
-                 expression ";" 
-                 expression ")" statement ;   
+ifStmt        = "if" "(" statement ")" statement
+whileStmt     = "while" "(" expression ")" statement      
+forStmt       = "for" "(" 
+                  ( letDecl | exprStmt )
+                   expression ";" 
+                   expression ")" statement ;   
 
-exprStmt    = expression ";"
-printStmt   = "print" expression ";"
+exprStmt      = expression ";"
+printStmt     = "print" expression ";"
 
-expression  = assignment
+expression    = assignment | assignmentSum
 
-assignment  = IDENTIFIER "=" assignment | equality
+assignment    = IDENTIFIER "=" assignment | equality
 
-equality    = comparison ( ( "!=" | "==" ) comparison )*
+assignmentSum = IDENTIFIER "+=" equality
 
-comparison  = term ( ( ">" | ">=" | "<" | "<=" ) term )*
+equality      = comparison ( ( "!=" | "==" ) comparison )*
 
-term        = factor ( ( "-" | "+" ) factor )* 
+comparison    = term ( ( ">" | ">=" | "<" | "<=" ) term )*
 
-factor      = unary ( ( "/" | "*" ) unary )* 
+term          = factor ( ( "-" | "+" ) factor )* 
 
-unary       = ( "!" | "-" ) unary 
-                | literal
+factor        = unary ( ( "/" | "*" ) unary )* 
 
-literal     = NUMERIC | STRING | TERMINAL 
-                | "(" expression ")"
-                | IDENTIFIER
+unary         = ( "!" | "-" ) unary 
+                  | literal
+
+literal       = NUMERIC | STRING | TERMINAL 
+                  | "(" expression ")"
+                  | IDENTIFIER
