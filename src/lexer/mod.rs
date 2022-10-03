@@ -65,7 +65,8 @@ pub enum OperatorKind {
     Less,
     LessEqual,
     EqualEqual,
-    BangEqual
+    BangEqual,
+    PlusEqual,
 }
 
 

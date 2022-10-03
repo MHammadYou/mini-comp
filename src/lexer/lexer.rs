@@ -174,7 +174,12 @@ impl<'a> Lexer<'a> {
                 Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Equal })
             },
 
-            '+' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Plus }),
+            '+' => {
+                if self.check_next('=') {
+                    return Ok(TokenType::Operator(OperatorKind::PlusEqual))
+                }
+                Ok(TokenType::Operations { raw: c, kind: OperationKind::Plus })
+            },
             '-' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Minus }),
             '*' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Star }),
             '/' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Slash }),
