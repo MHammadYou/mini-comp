@@ -165,6 +165,17 @@ impl Parser {
                 },
                 _ => ()
             }
+        } else if self.match_type(&[&TokenType::Operator(OperatorKind::PlusEqual)]) {
+            let value = self.parse_assignment();
+
+            match expr {
+                Expr::Variable(ident_name) => {
+                    let name = ident_name;
+                    let new_expr = AssignExpr{ name, value: Box::new(value) };
+                    return Expr::Assign(new_expr)
+                },
+                _ => ()
+            }
         }
         expr
 
