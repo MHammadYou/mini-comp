@@ -1,4 +1,4 @@
-use super::{*, stmt::Stmt, ast::AssignExpr};
+use super::{*, stmt::Stmt, ast::{AssignExpr, UpdateExpr}};
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
 use parser::ast::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
 
@@ -171,8 +171,12 @@ impl Parser {
             match expr {
                 Expr::Variable(ident_name) => {
                     let name = ident_name;
-                    let new_expr = AssignExpr{ name, value: Box::new(value) };
-                    return Expr::Assign(new_expr)
+                    let new_expr = UpdateExpr { 
+                        name, 
+                        op: TokenType::Operations { raw: '+', kind: OperationKind::Plus }, 
+                        change: Box::new(value) 
+                    };
+                    return Expr::Update(new_expr)
                 },
                 _ => ()
             }

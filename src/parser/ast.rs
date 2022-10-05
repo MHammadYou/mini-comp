@@ -48,6 +48,13 @@ pub struct AssignExpr {
     pub value: Box<Expr>
 }
 
+#[derive(Debug)]
+pub struct UpdateExpr {
+    pub name: TokenType,
+    pub op: TokenType,
+    pub change: Box<Expr>
+}
+
 
 #[derive(Debug)]
 pub enum Expr {
@@ -56,7 +63,8 @@ pub enum Expr {
     Grouping(Grouping),
     Literal(Literal),
     Variable(TokenType),
-    Assign(AssignExpr)
+    Assign(AssignExpr),
+    Update(UpdateExpr)
 }
 
 
