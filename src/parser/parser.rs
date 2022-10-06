@@ -180,6 +180,21 @@ impl Parser {
                 },
                 _ => ()
             }
+        } else if self.match_type(&[&TokenType::Operator(OperatorKind::MinusEqual)]) {
+            let value = self.parse_assignment();
+
+            match expr {
+                Expr::Variable(ident_name) => {
+                    let name = ident_name;
+                    let new_expr = UpdateExpr { 
+                        name, 
+                        op: TokenType::Operations { raw: '-', kind: OperationKind::Minus }, 
+                        change: Box::new(value) 
+                    };
+                    return Expr::Update(new_expr)
+                },
+                _ => ()
+            }
         }
         expr
 
