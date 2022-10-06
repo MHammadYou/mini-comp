@@ -180,7 +180,14 @@ impl<'a> Lexer<'a> {
                 }
                 Ok(TokenType::Operations { raw: c, kind: OperationKind::Plus })
             },
-            '-' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Minus }),
+
+            '-' => {
+                if self.check_next('=') {
+                    return Ok(TokenType::Operator(OperatorKind::MinusEqual))
+                }
+                Ok(TokenType::Operations { raw: c, kind: OperationKind::Minus })
+            },
+
             '*' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Star }),
             '/' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Slash }),
 
