@@ -23,11 +23,12 @@ forStmt       = "for" "("
 exprStmt      = expression ";"
 printStmt     = "print" expression ";"
 
-expression    = assignment | assignmentSum
+expression    = assignment | assignmentSum | assignmentSub
 
 assignment    = IDENTIFIER "=" assignment | equality
 
 assignmentSum = IDENTIFIER "+=" equality
+assignmentSum = IDENTIFIER "-=" equality
 
 equality      = comparison ( ( "!=" | "==" ) comparison )*
 
