@@ -1,12 +1,13 @@
-use super::{*, stmt::Stmt, ast::{AssignExpr, UpdateExpr}};
+use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::ast::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr };
+use stmt::Stmt;
 
 
 pub struct Parser {
     current: usize,
     tokens: Vec<TokenType>
-}
+} 
 
 impl Parser {
     pub fn new(tokens: Vec<TokenType>) -> Parser {

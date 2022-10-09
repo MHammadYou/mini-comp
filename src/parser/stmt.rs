@@ -1,5 +1,5 @@
 use crate::lexer::TokenType;
-use super::ast::Expr;
+use super::expr::Expr;
 
 #[derive(Debug)]
 pub enum Stmt {
