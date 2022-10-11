@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr };
 use stmt::Stmt;
 
 
@@ -319,7 +319,21 @@ impl Parser {
                 return Expr::UnaryExpr(new_expr)
             }
         
-        self.parse_literal()
+        self.parse_call()
+    }
+
+    fn parse_call(&mut self) -> Expr {
+        let mut expr = self.parse_literal();
+
+        loop {
+            if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenCurly }]) {
+                expr = self.finish_call(expr);
+            } else {
+                break;
+            }
+        }
+
+        expr
     }
 
     fn parse_literal(&mut self) -> Expr {
@@ -432,6 +446,24 @@ impl Parser {
 
         panic!("Invalid Syntax, No literal match");
     }
+
+
+    fn finish_call(&mut self, callee: Expr) -> Expr {
+        let args = vec![];
+
+        if !self.check_type(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }) {
+            args.push(self.parse_expr());
+
+            while self.match_type(&[&TokenType::Punctuation { raw: ',', kind: PunctuationKind::Comma }]) {
+                args.push(self.parse_expr());
+            }
+        }
+
+        let paren = self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseCurly }, "Expected ')' after argument(s)");
+        let expr = CallExpr{ callee: Box::new(callee), paren, args};
+        Expr::Call(expr)
+    }
+
 
     fn consume_unit(&mut self, token_type: &TokenType, message: &str) -> TokenType {
         if self.check_type(token_type) {
