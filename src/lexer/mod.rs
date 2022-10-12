@@ -94,5 +94,7 @@ pub enum PunctuationKind {
     CloseCurly,
     Separator,
     Equal,
-    Bang // !
+    Bang, // !
+    Comma
 }
+ 

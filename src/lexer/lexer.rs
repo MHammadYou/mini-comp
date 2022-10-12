@@ -161,6 +161,7 @@ impl<'a> Lexer<'a> {
             '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::CloseCurly }),
             '0' ..= '9' | '.' => self.parse_numbers(c),
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
+            ',' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Comma }),
             '!' => {
                 if self.check_next('=') {
                     return Ok(TokenType::Operator(OperatorKind::BangEqual))

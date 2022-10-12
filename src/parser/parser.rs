@@ -449,7 +449,7 @@ impl Parser {
 
 
     fn finish_call(&mut self, callee: Expr) -> Expr {
-        let args = vec![];
+        let mut args = vec![];
 
         if !self.check_type(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }) {
             args.push(self.parse_expr());
