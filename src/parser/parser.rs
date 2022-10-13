@@ -507,25 +507,4 @@ impl Parser {
     fn end_of_stream(&self) -> bool {
         self.peek() == TokenType::EOF
     }
-
-    fn synchronize(&mut self) {
-        self.advance();
-
-        while !self.end_of_stream() {
-            match self.previous() {
-                TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator } => return,
-                _ => ()
-            }
-
-            match self.peek() {
-                TokenType::Terminal(str) => {
-                    if str == "let" || str == "def" || str == "print" {
-                        return;
-                    }
-                },
-                _ => ()
-            }
-            self.advance();
-        }
-    }
 }

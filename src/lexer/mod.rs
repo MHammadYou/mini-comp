@@ -86,8 +86,6 @@ pub enum TokenType {
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum PunctuationKind {
-    Open,
-    Close,
     OpenParen,
     CloseParen,
     OpenCurly,
