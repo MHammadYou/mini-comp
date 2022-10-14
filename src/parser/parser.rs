@@ -455,6 +455,9 @@ impl Parser {
             args.push(self.parse_expr());
 
             while self.match_type(&[&TokenType::Punctuation { raw: ',', kind: PunctuationKind::Comma }]) {
+                if args.len() >= 255 {
+                    panic!("Can't have more than 255 arguments!");
+                }
                 args.push(self.parse_expr());
             }
         }
