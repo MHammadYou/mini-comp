@@ -325,6 +325,8 @@ impl Parser {
     fn parse_call(&mut self) -> Expr {
         let mut expr = self.parse_literal();
 
+        // TODO: Fix 
+
         loop {
             if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenCurly }]) {
                 expr = self.finish_call(expr);
