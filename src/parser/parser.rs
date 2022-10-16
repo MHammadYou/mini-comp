@@ -384,10 +384,10 @@ impl Parser {
             let token = self.peek();
             
             let value_str = match token {
-                TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
+                TokenType::Numeric { raw, hint: _ } => raw,
                 _ => "Nil".to_string()
             };
-
+ 
             let value = value_str.parse::<i32>().unwrap();
             let expr = Literal::Integer(value);
 
@@ -403,7 +403,7 @@ impl Parser {
             let token = self.peek();
 
             let value_str = match token {
-                TokenType::Numeric { raw, hint: _ } => String::from(&raw[..]),
+                TokenType::Numeric { raw, hint: _ } => raw,
                 _ => "Nil".to_string()
             };
 
@@ -423,7 +423,7 @@ impl Parser {
         let raw = self.peek();
 
         let raw = match raw {
-            TokenType::String(raw) => String::from(&raw[..]),
+            TokenType::String(raw) => raw,
             _ => "Nil".to_string()
         };
 
