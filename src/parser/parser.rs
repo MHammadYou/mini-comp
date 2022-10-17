@@ -427,7 +427,7 @@ impl Parser {
             _ => "Nil".to_string()
         };
 
-        if self.match_type(&[&TokenType::String(String::from(&raw[..]))]) {
+        if self.match_type(&[&TokenType::String(raw.clone())]) {
             let expr = Literal::String(String::from(raw));
             return Expr::Literal(expr)
         }
