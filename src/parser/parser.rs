@@ -325,10 +325,8 @@ impl Parser {
     fn parse_call(&mut self) -> Expr {
         let mut expr = self.parse_literal();
 
-        // TODO: Fix 
-
         loop {
-            if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenCurly }]) {
+            if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }]) {
                 expr = self.finish_call(expr);
             } else {
                 break;
@@ -464,7 +462,7 @@ impl Parser {
             }
         }
 
-        let paren = self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseCurly }, "Expected ')' after argument(s)");
+        let paren = self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after argument(s)");
         let expr = CallExpr{ callee: Box::new(callee), paren, args};
         Expr::Call(expr)
     }
