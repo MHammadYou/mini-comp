@@ -2,7 +2,13 @@
 
 program       = declaration* EOF
 
-declaration   = letDecl | statement
+declaration   = letDecl | defDecl | statement
+
+defDecl       = "def" function
+
+function      = IDENTIFIER "(" parameters? ")" block
+
+parameters    = IDENTIFIER ( "," IDENTIFIER )* 
 
 statement     = exprStmt | 
                   printStmt |
