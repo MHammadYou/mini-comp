@@ -4,6 +4,7 @@ program       = declaration* EOF
 
 declaration   = letDecl | defDecl | statement
 
+letDecl       = "let" IDENTIFIER ( "=" expression )? ";"
 defDecl       = "def" function
 
 function      = IDENTIFIER "(" parameters? ")" block
