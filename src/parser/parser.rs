@@ -70,7 +70,7 @@ impl Parser {
         }
 
         if self.match_type(&[&TokenType::Terminal(String::from("def"))]) {
-            return self.function_statement();
+            return self.function_statement("function");
         }
 
         if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }]) {
@@ -80,11 +80,50 @@ impl Parser {
         return self.expression_statement();
     }
 
-    fn function_statement(&mut self) -> Stmt {
+    fn function_statement(&mut self, kind: &str) -> Stmt {
 
-        // TODO: Implement
+        let ident: String = match self.peek() {
+            TokenType::Identifier(value) => value,
+            _ => String::from("Invalid")
+        };
 
-        unimplemented!()
+        let name = self.consume_unit(&TokenType::Identifier(ident), "Expected function name after def");
+
+        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after function name");  
+        
+        let mut parameters = vec![];
+
+        if !self.check_type(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }) {
+
+            let ident: String = match self.peek() {
+                TokenType::Identifier(value) => value,
+                _ => String::from("Invalid")
+            };
+
+            parameters.push(self.consume_unit(&TokenType::Identifier(ident), "Expected parameter after '('"));
+
+            while self.match_type(&[&TokenType::Punctuation { raw: ',', kind: PunctuationKind::Comma }]) {
+                if parameters.len() >= 255 {
+                    panic!("Can't have more than 255 parameters.");
+                }
+
+                let ident: String = match self.peek() {
+                    TokenType::Identifier(value) => value,
+                    _ => String::from("Invalid")
+                };
+
+                parameters.push(self.consume_unit(&TokenType::Identifier(ident), "Expected parameter after ','"));
+
+                }
+        }
+
+        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after for");    
+
+        self.consume_unit(&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }, &format!("Expected '{{' before {} body.", kind));
+
+        let body = self.parse_block();
+
+        Stmt::Function { name, params: parameters, body }
     }
 
     fn for_statement(&mut self) -> Stmt {
