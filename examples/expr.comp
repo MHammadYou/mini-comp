@@ -1,3 +1,10 @@
 
 
-my_fun("Arg1", "Arg2");
+
+def hello() {
+    print "This function says hello";
+}
+
+def add(x, y) {
+    print x + y;
+}
