@@ -73,11 +73,19 @@ impl Parser {
             return self.function_statement("function");
         }
 
+        if self.match_type(&[&TokenType::Terminal(String::from("return"))]) {
+            return self.return_statement();
+        }
+
         if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }]) {
             return Stmt::Block { statements: self.parse_block() }
         }
 
         return self.expression_statement();
+    }
+
+    fn return_statement(&mut self) -> Stmt {
+        unimplemented!()
     }
 
     fn function_statement(&mut self, kind: &str) -> Stmt {
