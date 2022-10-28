@@ -10,6 +10,6 @@ pub enum Stmt {
     If{ condition: Expr, branch: Box<Stmt> },
     While{ condition: Expr, body: Box<Stmt> },
     Function{ name: TokenType, params: Vec<TokenType>, body: Vec<Stmt> },
-    Return{ keyword: TokenType, value: Expr }
+    Return{ keyword: TokenType, value: Option<Expr> }
 }
 

@@ -85,7 +85,22 @@ impl Parser {
     }
 
     fn return_statement(&mut self) -> Stmt {
-        unimplemented!()
+
+
+        let keyword = self.previous();
+
+        let mut value = None;
+
+        if !self.check_type(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }) {
+            let expr = self.parse_expr();
+
+            value = Some(expr);
+        }
+
+        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ';' after return value");
+
+        Stmt::Return { keyword, value }
+
     }
 
     fn function_statement(&mut self, kind: &str) -> Stmt {
