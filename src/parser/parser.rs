@@ -32,6 +32,11 @@ impl Parser {
         if self.match_type(&[&TokenType::Terminal(String::from("let"))]) {
             return self.let_declaration();
         }
+
+        if self.match_type(&[&TokenType::Terminal(String::from("def"))]) {
+            return self.function_statement("function");
+        }
+
         return self.parse_statement();
     }
 
@@ -69,10 +74,6 @@ impl Parser {
             return self.for_statement();
         }
 
-        if self.match_type(&[&TokenType::Terminal(String::from("def"))]) {
-            return self.function_statement("function");
-        }
-
         if self.match_type(&[&TokenType::Terminal(String::from("return"))]) {
             return self.return_statement();
         }
@@ -94,6 +95,7 @@ impl Parser {
         let mut value = None;
 
         if !self.check_type(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }) {
+            
             let expr = self.parse_expr();
 
             value = Some(expr);
