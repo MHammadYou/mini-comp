@@ -74,7 +74,7 @@ impl Parser {
             return self.for_statement();
         }
 
-        if self.match_type(&[&TokenType::Terminal(String::from("return"))]) {
+        if self.match_type(&[&TokenType::Identifier(String::from("return"))]) {
             return self.return_statement();
         }
 
@@ -86,9 +86,6 @@ impl Parser {
     }
 
     fn return_statement(&mut self) -> Stmt {
-
-        // Todo Fix
-
 
         let keyword = self.previous();
 
