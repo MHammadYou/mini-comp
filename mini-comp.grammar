@@ -16,7 +16,8 @@ statement     = exprStmt |
                   block | 
                   ifStmt | 
                   whileStmt |
-                  forStmt
+                  forStmt |
+                  returnStmt
 
 block         = "{" declaration "}"
 
@@ -25,7 +26,8 @@ whileStmt     = "while" "(" expression ")" statement
 forStmt       = "for" "(" 
                   ( letDecl | exprStmt )
                    expression ";" 
-                   expression ")" statement ;   
+                   expression ")" statement ; 
+returnStmt    = "return" expression? ";"  
 
 exprStmt      = expression ";"
 printStmt     = "print" expression ";"
