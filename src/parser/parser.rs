@@ -74,7 +74,7 @@ impl Parser {
             return self.for_statement();
         }
 
-        if self.match_type(&[&TokenType::Identifier(String::from("return"))]) {
+        if self.match_type(&[&TokenType::Terminal(String::from("return"))]) {
             return self.return_statement();
         }
 

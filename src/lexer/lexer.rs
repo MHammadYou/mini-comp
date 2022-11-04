@@ -48,6 +48,7 @@ impl<'a> Lexer<'a> {
                 (String::from("def"), TokenType::Terminal(String::from("def"))),
                 (String::from("print"), TokenType::Terminal(String::from("print"))),
                 (String::from("nil"), TokenType::Terminal(String::from("nil"))),
+                (String::from("return"), TokenType::Terminal(String::from("return"))),
                 (String::from("if"), TokenType::Terminal(String::from("if"))),
                 (String::from("while"), TokenType::Terminal(String::from("wjile"))),
                 (String::from("for"), TokenType::Terminal(String::from("for"))),
