@@ -37,7 +37,18 @@ impl Parser {
             return self.function_statement("function");
         }
 
+        if self.match_type(&[&TokenType::Terminal(String::from("class"))]) {
+            return self.class_statement();
+        }
+
         return self.parse_statement();
+    }
+
+    fn class_statement(&mut self) -> Stmt {
+
+        // TODO
+
+        unimplemented!()
     }
 
     fn let_declaration(&mut self) -> Stmt {
