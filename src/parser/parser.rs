@@ -46,9 +46,24 @@ impl Parser {
 
     fn class_statement(&mut self) -> Stmt {
 
-        // TODO
+        let ident: String = match self.peek() {
+            TokenType::Identifier(value) => value,
+            _ => String::from("Invalid")
+        };
 
-        unimplemented!()
+        let name = self.consume_unit(&TokenType::Identifier(ident), "Expected class name.");
+
+        self.consume_unit(&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }, "Expected '{' after class name.");
+
+        let mut methods = vec![];
+
+        while !self.check_type(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }) && !self.end_of_stream() {
+            methods.push(self.function_statement("method"));
+        }
+
+        self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }, "Expected '}' after class body");
+
+        Stmt::Class { name, methods }
     }
 
     fn let_declaration(&mut self) -> Stmt {
