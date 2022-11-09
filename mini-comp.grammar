@@ -54,7 +54,7 @@ factor        = unary ( ( "/" | "*" ) unary )*
 unary         = ( "!" | "-" ) unary 
                   | call
 
-call          = literal ( "(" arguments? ")" )*
+call          = literal ( "(" arguments? ")" | "." IDENTIFIER )*
 
 arguments     = expression ( "," expression )*
 
