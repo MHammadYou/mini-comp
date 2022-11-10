@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr, Get };
 use stmt::Stmt;
 
 
@@ -428,7 +428,16 @@ impl Parser {
         loop {
             if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }]) {
                 expr = self.finish_call(expr);
-            } else {
+            } else if self.match_type(&[&TokenType::Punctuation { raw: '.', kind: PunctuationKind::Dot }]) {
+                let ident: String = match self.peek() {
+                    TokenType::Identifier(value) => value,
+                    _ => String::from("Invalid")
+                };
+
+                let name = self.consume_unit(&TokenType::Identifier(ident), "Expected property name after '.'");
+                expr = Expr::Get(Get {object: Box::new(expr), name});
+            } 
+            else {
                 break;
             }
         }

@@ -62,6 +62,12 @@ pub struct Call {
     pub args: Vec<Expr>
 }
 
+#[derive(Debug)]
+pub struct Get {
+    pub object: Box<Expr>,
+    pub name: TokenType
+}
+
 
 #[derive(Debug)]
 pub enum Expr {
@@ -72,7 +78,8 @@ pub enum Expr {
     Variable(TokenType),
     Assign(AssignExpr),
     Update(UpdateExpr),
-    Call(Call)
+    Call(Call),
+    Get(Get)
 }
 
 
