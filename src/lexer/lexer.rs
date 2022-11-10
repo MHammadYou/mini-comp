@@ -78,7 +78,6 @@ impl<'a> Lexer<'a> {
 
         if start == '.' {
             raw += &self.parse_digits(radix, false)?;
-            println!("HIt");
             hint = NumericHint::FloatingPoint;
         } else if start.is_digit(radix) {
 
@@ -161,9 +160,10 @@ impl<'a> Lexer<'a> {
             ')' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::CloseParen }),
             '{' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::OpenCurly }),
             '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::CloseCurly }),
-            '0' ..= '9' | '.' => self.parse_numbers(c),
+            '0' ..= '9' => self.parse_numbers(c),
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
             ',' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Comma }),
+            '.' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Dot }),
             '!' => {
                 if self.check_next('=') {
                     return Ok(TokenType::Operator(OperatorKind::BangEqual))

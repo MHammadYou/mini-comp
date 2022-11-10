@@ -93,6 +93,7 @@ pub enum PunctuationKind {
     Separator,
     Equal,
     Bang, // !
-    Comma
+    Comma,
+    Dot
 }
  
