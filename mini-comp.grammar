@@ -38,7 +38,7 @@ printStmt     = "print" expression ";"
 
 expression    = assignment | assignmentSum | assignmentSub
 
-assignment    = IDENTIFIER "=" assignment | equality
+assignment    = ( call "." )? IDENTIFIER "=" assignment | equality
 
 assignmentSum = IDENTIFIER "+=" equality
 assignmentSum = IDENTIFIER "-=" equality
