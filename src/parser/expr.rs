@@ -68,6 +68,13 @@ pub struct Get {
     pub name: TokenType
 }
 
+#[derive(Debug)]
+pub struct Set {
+    pub object: Box<Expr>,
+    pub name: TokenType,
+    pub value: Box<Expr>
+}
+
 
 #[derive(Debug)]
 pub enum Expr {
@@ -79,7 +86,8 @@ pub enum Expr {
     Assign(AssignExpr),
     Update(UpdateExpr),
     Call(Call),
-    Get(Get)
+    Get(Get),
+    Set(Set)
 }
 
 
