@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr, Get };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr, Get, Set };
 use stmt::Stmt;
 
 
@@ -264,6 +264,10 @@ impl Parser {
                     let new_expr = AssignExpr{ name, value: Box::new(value) };
                     return Expr::Assign(new_expr)
                 },
+                Expr::Get(get) => {
+                    let new_expr = Set { object: get.object, name: get.name, value: Box::new(value) };
+                    return Expr::Set(new_expr)
+                }
                 _ => ()
             }
         } else if self.match_type(&[&TokenType::Operator(OperatorKind::PlusEqual)]) {
