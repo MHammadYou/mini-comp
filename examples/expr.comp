@@ -10,3 +10,8 @@ class Main {
         print value;
     }
 }
+
+
+let object = Main();
+object.property = "Random Property";
+print object.property;
