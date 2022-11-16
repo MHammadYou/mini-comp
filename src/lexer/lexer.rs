@@ -47,6 +47,7 @@ impl<'a> Lexer<'a> {
                 (String::from("let"), TokenType::Terminal(String::from("let"))),
                 (String::from("def"), TokenType::Terminal(String::from("def"))),
                 (String::from("class"), TokenType::Terminal(String::from("class"))),
+                (String::from("this"), TokenType::Terminal(String::from("this"))),
                 (String::from("print"), TokenType::Terminal(String::from("print"))),
                 (String::from("nil"), TokenType::Terminal(String::from("nil"))),
                 (String::from("return"), TokenType::Terminal(String::from("return"))),
