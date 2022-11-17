@@ -1,6 +1,6 @@
 use super::*;
-use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr, Get, Set };
+use crate::{lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind }};
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr, Get, Set, This };
 use stmt::Stmt;
 
 
@@ -469,6 +469,11 @@ impl Parser {
         if self.match_type(&[&TokenType::Terminal(String::from("nil"))]) {
             let expr = Literal::Terminal(Terminal{ value: Box::new("nil")});
             return Expr::Literal(expr)
+        }
+
+        if self.match_type(&[&TokenType::Terminal(String::from("this"))]) {
+            let expr = This { keyword: self.previous() };
+            return Expr::This(expr);
         }
 
         let value = match self.peek() {
