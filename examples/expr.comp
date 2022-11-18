@@ -9,9 +9,12 @@ class Main {
     log(value) {
         print value;
     }
+
+    objectName() {
+        print this;
+    }
 }
 
 
 let object = Main();
-object.property = "Random Property";
-print object.property;
+object.objectName();
