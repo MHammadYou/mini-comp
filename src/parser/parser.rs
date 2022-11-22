@@ -51,7 +51,20 @@ impl Parser {
             _ => String::from("Invalid")
         };
 
-        let name = self.consume_unit(&TokenType::Identifier(ident), "Expected class name.");
+        let mut name = self.consume_unit(&TokenType::Identifier(ident), "Expected class name.");
+
+        let super_class = None;
+
+        if self.match_type(&[&TokenType::Terminal(String::from("extends"))]) {
+
+            let ident: String = match self.peek() {
+                TokenType::Identifier(value) => value,
+                _ => String::from("Invalid")
+            };
+
+            self.consume_unit(&TokenType::Identifier(ident), "Expected parent classname.");
+            super_class = Some(Expr::Variable(self.previous()));
+        }
 
         self.consume_unit(&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }, "Expected '{' after class name.");
 
@@ -63,7 +76,7 @@ impl Parser {
 
         self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }, "Expected '}' after class body");
 
-        Stmt::Class { name, methods }
+        Stmt::Class { name, super_class, methods }
     }
 
     fn let_declaration(&mut self) -> Stmt {
