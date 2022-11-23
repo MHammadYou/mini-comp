@@ -11,6 +11,6 @@ pub enum Stmt {
     While{ condition: Expr, body: Box<Stmt> },
     Function{ name: TokenType, params: Vec<TokenType>, body: Vec<Stmt> },
     Return{ keyword: TokenType, value: Option<Expr> },
-    Class{ name: TokenType, super_class: Expr, methods: Vec<Stmt> }
+    Class{ name: TokenType, super_class: Option<Expr>, methods: Vec<Stmt> }
 }
 

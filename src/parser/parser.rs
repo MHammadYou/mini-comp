@@ -51,9 +51,9 @@ impl Parser {
             _ => String::from("Invalid")
         };
 
-        let mut name = self.consume_unit(&TokenType::Identifier(ident), "Expected class name.");
+        let name = self.consume_unit(&TokenType::Identifier(ident), "Expected class name.");
 
-        let super_class = None;
+        let mut super_class = None;
 
         if self.match_type(&[&TokenType::Terminal(String::from("extends"))]) {
 
