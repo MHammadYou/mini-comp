@@ -60,6 +60,6 @@ call          = literal ( "(" arguments? ")" | "." IDENTIFIER )*
 arguments     = expression ( "," expression )*
 
 literal       = NUMERIC | STRING | TERMINAL 
-                  | "this" | "true" | "false"
+                  | "this" | "true" | "false" | "this"
                   | "(" expression ")"
                   | IDENTIFIER
