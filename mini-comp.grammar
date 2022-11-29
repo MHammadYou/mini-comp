@@ -63,3 +63,4 @@ literal       = NUMERIC | STRING | TERMINAL
                   | "this" | "true" | "false" | "this"
                   | "(" expression ")"
                   | IDENTIFIER
+                  | "super" "." IDENTIFIER
