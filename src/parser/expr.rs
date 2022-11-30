@@ -80,6 +80,12 @@ pub struct This {
     pub keyword: TokenType
 }
 
+#[derive(Debug)]
+pub struct Super {
+    keyword: TokenType,
+    method: TokenType
+}
+
 
 #[derive(Debug)]
 pub enum Expr {
@@ -93,7 +99,8 @@ pub enum Expr {
     Call(Call),
     Get(Get),
     Set(Set),
-    This(This)
+    This(This),
+    Super(Super)
 }
 
 
