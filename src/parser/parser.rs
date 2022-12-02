@@ -1,6 +1,6 @@
 use super::*;
 use crate::{lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind }};
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr, Get, Set, This };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr, Get, Set, This, Super };
 use stmt::Stmt;
 
 
@@ -489,6 +489,21 @@ impl Parser {
             return Expr::This(expr);
         }
 
+        if self.match_type(&[&TokenType::Terminal(String::from("super"))]) {
+            let keyword = self.previous();
+            self.consume_unit(&TokenType::Punctuation { raw: '.', kind: PunctuationKind::Dot }, "Expected '.' after super keyword");
+
+            let ident = match self.peek() {
+                TokenType::Identifier(value) => value,
+                _ => String::from("Invalid")
+            };
+
+            let method = self.consume_unit(&TokenType::Identifier(ident), "Expected superclass name.");
+
+            let new_expr = Super{ keyword, method };
+            return Expr::Super(new_expr);
+        }
+
         let value = match self.peek() {
             TokenType::Identifier(value) => value,
             _ => String::from("Invalid")
@@ -497,6 +512,7 @@ impl Parser {
         if self.match_type(&[&TokenType::Identifier(value)]) {
             return Expr::Variable(self.previous())
         }
+
 
 
         /*
