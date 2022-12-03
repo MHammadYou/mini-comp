@@ -82,8 +82,8 @@ pub struct This {
 
 #[derive(Debug)]
 pub struct Super {
-    keyword: TokenType,
-    method: TokenType
+    pub keyword: TokenType,
+    pub method: TokenType
 }
 
 
