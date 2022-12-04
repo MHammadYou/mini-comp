@@ -52,8 +52,10 @@ term          = factor ( ( "-" | "+" ) factor )*
 
 factor        = unary ( ( "/" | "*" ) unary )* 
 
-unary         = ( "!" | "-" ) unary 
+unary         = ( "!" | "-" ) unary | increment
                   | call
+
+increment     = expression "++"
 
 call          = literal ( "(" arguments? ")" | "." IDENTIFIER )*
 
