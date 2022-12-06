@@ -56,7 +56,6 @@ pub enum OperationKind {
     Minus,
     Star,
     Slash,
-    Increment,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -69,6 +68,7 @@ pub enum OperatorKind {
     BangEqual,
     PlusEqual,
     MinusEqual,
+    Increment,
 }
 
 
