@@ -183,6 +183,8 @@ impl<'a> Lexer<'a> {
             '+' => {
                 if self.check_next('=') {
                     return Ok(TokenType::Operator(OperatorKind::PlusEqual))
+                } else if self.check_next('+') {
+                    return Ok(TokenType::Operator(OperatorKind::Increment))
                 } 
                 Ok(TokenType::Operations { raw: c, kind: OperationKind::Plus })
             },
