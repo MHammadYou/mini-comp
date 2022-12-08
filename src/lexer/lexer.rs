@@ -149,9 +149,13 @@ impl<'a> Lexer<'a> {
     }
 
     fn check_next(&mut self, next: char) -> bool {
-        match self.chars.next() {
+        match self.chars.peek() {
             Some(c) => {
-                c == next
+                let result = c == &next;
+                if result {
+                    self.chars.next();
+                } 
+                result
             },
             None => false
         }
