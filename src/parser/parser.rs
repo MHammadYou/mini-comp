@@ -1,5 +1,5 @@
 use super::*;
-use crate::{lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind }};
+use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
 use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, Call as CallExpr, Get, Set, This, Super };
 use stmt::Stmt;
 
