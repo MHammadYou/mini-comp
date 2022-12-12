@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, Get, Set, This, Super };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, GetExpr, Set, This, Super };
 use stmt::Stmt;
 
 
@@ -452,7 +452,7 @@ impl Parser {
                 };
 
                 let name = self.consume_unit(&TokenType::Identifier(ident), "Expected property name after '.'");
-                expr = Expr::Get(Get {object: Box::new(expr), name});
+                expr = Expr::Get(GetExpr {object: Box::new(expr), name});
             } 
             else {
                 break;
