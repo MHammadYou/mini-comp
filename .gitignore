@@ -2,7 +2,7 @@
 debug/
 **/*.rs.bk
 *.pdb
-run.bat
+*.bat
 desktop.ini
 
 
