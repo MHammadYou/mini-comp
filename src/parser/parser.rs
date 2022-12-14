@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, GetExpr, Set, This, Super };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, GetExpr, SetExpr, This, Super };
 use stmt::Stmt;
 
 
@@ -278,7 +278,7 @@ impl Parser {
                     return Expr::Assign(new_expr)
                 },
                 Expr::Get(get) => {
-                    let new_expr = Set { object: get.object, name: get.name, value: Box::new(value) };
+                    let new_expr = SetExpr { object: get.object, name: get.name, value: Box::new(value) };
                     return Expr::Set(new_expr)
                 }
                 _ => ()
