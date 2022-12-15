@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, GetExpr, SetExpr, This, Super };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, GetExpr, SetExpr, ThisExpr, Super };
 use stmt::Stmt;
 
 
@@ -485,7 +485,7 @@ impl Parser {
         }
 
         if self.match_type(&[&TokenType::Terminal(String::from("this"))]) {
-            let expr = This { keyword: self.previous() };
+            let expr = ThisExpr { keyword: self.previous() };
             return Expr::This(expr);
         }
 

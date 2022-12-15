@@ -76,7 +76,7 @@ pub struct SetExpr {
 }
 
 #[derive(Debug)]
-pub struct This {
+pub struct ThisExpr {
     pub keyword: TokenType
 }
 
@@ -99,7 +99,7 @@ pub enum Expr {
     Call(CallExpr),
     Get(GetExpr),
     Set(SetExpr),
-    This(This),
+    This(ThisExpr),
     Super(Super)
 }
 
