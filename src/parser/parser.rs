@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, GetExpr, SetExpr, ThisExpr, Super };
+use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, GetExpr, SetExpr, ThisExpr, SuperExpr };
 use stmt::Stmt;
 
 
@@ -500,7 +500,7 @@ impl Parser {
 
             let method = self.consume_unit(&TokenType::Identifier(ident), "Expected superclass name.");
 
-            let new_expr = Super{ keyword, method };
+            let new_expr = SuperExpr { keyword, method };
             return Expr::Super(new_expr);
         }
 

@@ -81,7 +81,7 @@ pub struct ThisExpr {
 }
 
 #[derive(Debug)]
-pub struct Super {
+pub struct SuperExpr {
     pub keyword: TokenType,
     pub method: TokenType
 }
@@ -100,7 +100,7 @@ pub enum Expr {
     Get(GetExpr),
     Set(SetExpr),
     This(ThisExpr),
-    Super(Super)
+    Super(SuperExpr)
 }
 
 
