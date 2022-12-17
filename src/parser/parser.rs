@@ -1,6 +1,6 @@
 use super::*;
 use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
-use parser::expr::{ Expr, BinaryExpr, UnaryExpr, Literal, Grouping, Terminal, AssignExpr, UpdateExpr, CallExpr, GetExpr, SetExpr, ThisExpr, SuperExpr };
+use parser::expr::*;
 use stmt::Stmt;
 
 
