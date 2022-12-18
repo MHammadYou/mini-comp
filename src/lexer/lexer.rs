@@ -167,7 +167,6 @@ impl<'a> Lexer<'a> {
             ')' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::CloseParen }),
             '{' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::OpenCurly }),
             '}' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::CloseCurly }),
-            '0' ..= '9' => self.parse_numbers(c),
             ';' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Separator }),
             ',' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Comma }),
             '.' => Ok(TokenType::Punctuation { raw: c, kind: PunctuationKind::Dot }),
@@ -216,7 +215,7 @@ impl<'a> Lexer<'a> {
                 Ok(TokenType::Operator(OperatorKind::Greater))
             }
 
-
+            '0' ..= '9' => self.parse_numbers(c),
             '"' => self.parse_string(),
             c if c.is_alphanumeric() || c == '_' => Ok(self.parse_identifiers_or_terminals(c)),
             _ => Err(LexerError::UnknownSymbol { symbol: c.to_string() })
