@@ -4,7 +4,6 @@ use crate::lexer::*;
 
 #[derive(Debug, Clone)]
 pub struct Lexer<'a> {
-    pub cur_line: usize,
     chars: std::iter::Peekable<std::str::Chars<'a>>,
     keywords: HashMap<String, TokenType>
 }
@@ -34,7 +33,6 @@ macro_rules! try_consume {
 impl<'a> Lexer<'a> {
     pub fn new(chars: &'a str) -> Lexer<'a> {
         Lexer {
-            cur_line: 1,
             chars: chars.chars().peekable(),
             
             keywords: HashMap::from([
@@ -221,9 +219,6 @@ impl<'a> Lexer<'a> {
     pub fn consume(&mut self) -> Option<char> {
         match self.chars.next() {
             Some(c) => {
-                if c == '\n' {
-                    self.cur_line += 1;
-                }
                 Some(c)
             },
             None => None
