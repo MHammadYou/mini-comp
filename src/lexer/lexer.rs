@@ -217,12 +217,7 @@ impl<'a> Lexer<'a> {
     }
 
     pub fn consume(&mut self) -> Option<char> {
-        match self.chars.next() {
-            Some(c) => {
-                Some(c)
-            },
-            None => None
-        }
+        self.chars.next()
     }
 
     fn skip_whitespace(&mut self) {
