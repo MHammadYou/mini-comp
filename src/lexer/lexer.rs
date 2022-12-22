@@ -13,7 +13,7 @@ macro_rules! try_consume {
         if let Some(c) = $self.chars.peek() {
             if try_consume!(impl c, $($inner), *) {
                 let tmp = *c;
-                $self.consume();
+                $self.chars.next();
                 Some(tmp)
             } else {
                 None
@@ -216,23 +216,19 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    pub fn consume(&mut self) -> Option<char> {
-        self.chars.next()
-    }
-
     fn skip_whitespace(&mut self) {
         while let Some(c) = self.chars.peek() {
             if !c.is_whitespace() {
                 break;
             }
-            self.consume();
+            self.chars.next();
         }
     }
 
     pub fn next_token(&mut self) -> Result<TokenType, LexerError> {
         self.skip_whitespace();
 
-        if let Some(c) = self.consume() {
+        if let Some(c) = self.chars.next() {
             self.transform_to_type(c)
         } else {
             Ok(TokenType::EOF)
