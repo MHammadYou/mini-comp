@@ -225,7 +225,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    pub fn next_token(&mut self) -> Result<TokenType, LexerError> {
+    fn next_token(&mut self) -> Result<TokenType, LexerError> {
         self.skip_whitespace();
 
         if let Some(c) = self.chars.next() {
