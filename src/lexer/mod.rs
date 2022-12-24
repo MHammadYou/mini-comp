@@ -69,6 +69,19 @@ pub enum OperatorKind {
     Increment,
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub enum PunctuationKind {
+    OpenParen,
+    CloseParen,
+    OpenCurly,
+    CloseCurly,
+    Separator,
+    Equal,
+    Bang, 
+    Comma,
+    Dot
+}
+
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
@@ -83,16 +96,5 @@ pub enum TokenType {
     Terminal(String)
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub enum PunctuationKind {
-    OpenParen,
-    CloseParen,
-    OpenCurly,
-    CloseCurly,
-    Separator,
-    Equal,
-    Bang, 
-    Comma,
-    Dot
-}
+
  
