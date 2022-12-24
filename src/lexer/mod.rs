@@ -4,12 +4,10 @@ extern crate thiserror;
 
 use thiserror::Error;
 
-use std::io;
-
 #[derive(Error, Debug)]
 pub enum LexerError {
     #[error("Some IO Error")]
-    FileIO(#[from] io::Error),
+    FileIO(#[from] std::io::Error),
 
     #[error("Expected {expected:?}, found {found:?}")]
     MissingExpectedSymbol {
@@ -93,7 +91,7 @@ pub enum PunctuationKind {
     CloseCurly,
     Separator,
     Equal,
-    Bang, // !
+    Bang, 
     Comma,
     Dot
 }
