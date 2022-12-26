@@ -28,8 +28,6 @@ macro_rules! try_consume {
 }
 
 
-
-
 impl<'a> Lexer<'a> {
     pub fn new(chars: &'a str) -> Lexer<'a> {
         Lexer {
