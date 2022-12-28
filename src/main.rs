@@ -7,9 +7,6 @@ use lexer::lexer::Lexer;
 use parser::parser::Parser;
 
 use clap::{App, SubCommand};
-
-use crate::lexer::TokenType;
-
 fn main() -> std::io::Result<()> {
 
     let matches = App::new("MiniComp")
@@ -42,16 +39,12 @@ fn main() -> std::io::Result<()> {
                 let tokens = lexer.get_tokens();
     
                 let mut parser = Parser::new(tokens);
-
                 let statements = parser.parse_program();
                 
                 println!("{:#?}", statements);
             }
-
-
         },
-        _ => {}
+        _ => ()
     }
-
     Ok(())
 }
