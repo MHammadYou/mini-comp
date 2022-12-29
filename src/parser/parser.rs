@@ -632,7 +632,7 @@ impl Parser {
     } 
 
     // TODO
-    fn match_look_ahead(&mut self, types: &[&TokenType]) -> bool {
+    fn _match_look_ahead(&mut self, types: &[&TokenType]) -> bool {
         for token_type in types {
             if self.current + 1 >= self.tokens.len() {
                 return false

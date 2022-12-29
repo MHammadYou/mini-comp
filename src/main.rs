@@ -29,9 +29,7 @@ fn main() -> std::io::Result<()> {
                 let mut lexer = lexer.clone();
                 let tokens = lexer.get_tokens();
 
-                for token in tokens {
-                    println!("{:?}", token)
-                }
+                println!("{:#?}", tokens);
             }
 
             if shows.contains(&"ast") {
