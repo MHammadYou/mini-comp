@@ -37,12 +37,11 @@ returnStmt    = "return" expression? ";"
 exprStmt      = expression ";"
 printStmt     = "print" expression ";"
 
-expression    = assignment | assignmentSum | assignmentSub
+expression    = assignment | compoundAssignment 
 
 assignment    = ( call "." )? IDENTIFIER "=" assignment | equality
 
-assignmentSum = IDENTIFIER "+=" equality
-assignmentSum = IDENTIFIER "-=" equality
+compoundAssignment = IDENTIFIER ( "+=" | "-=" ) equality ";"
 
 equality      = comparison ( ( "!=" | "==" ) comparison )*
 
