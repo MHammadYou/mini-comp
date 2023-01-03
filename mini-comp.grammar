@@ -37,11 +37,12 @@ returnStmt    = "return" expression? ";"
 exprStmt      = expression ";"
 printStmt     = "print" expression ";"
 
-expression    = assignment | compoundAssignment 
+expression    = assignment | compoundAssignment | increDecre
 
 assignment    = ( call "." )? IDENTIFIER "=" assignment | equality
 
 compoundAssignment = IDENTIFIER ( "+=" | "-=" ) equality ";"
+increDecre    = IDENTIFIER ( "++" | "--" ) ";"
 
 equality      = comparison ( ( "!=" | "==" ) comparison )*
 
