@@ -261,6 +261,31 @@ impl Parser {
     }
 
     fn parse_expr(&mut self) -> Expr {
+        if self.match_look_ahead(&[&TokenType::Operator(OperatorKind::Increment)]) {
+            let ident = match self.peek() {
+                TokenType::Identifier(value) => value,
+                _ => String::from("Invalid")
+            };
+
+            let identifier = self.consume_unit(&TokenType::Identifier(ident), "Expected identifier.");
+
+            let operator = self.advance();
+
+            match operator {
+                TokenType::Operator(OperatorKind::Increment) => {
+                    let new_expr = UpdateExpr {
+                        name: identifier,
+                        op: TokenType::Operations { raw: '+', kind: OperationKind::Plus },
+                        change: Box::new(Expr::Literal(Literal::Integer(1)))
+                    };
+                    return Expr::Update(new_expr)
+                },
+                _ => {
+                    panic!("Invalid operator")
+                }
+            }
+
+        }
         self.parse_assignment()
     }
 
