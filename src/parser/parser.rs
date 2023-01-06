@@ -268,7 +268,6 @@ impl Parser {
             };
 
             let identifier = self.consume_unit(&TokenType::Identifier(ident), "Expected identifier.");
-
             let operator = self.advance();
 
             match operator {
