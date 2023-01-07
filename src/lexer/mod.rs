@@ -69,6 +69,7 @@ pub enum OperatorKind {
     PlusEqual,
     MinusEqual,
     Increment,
+    Decrement
 }
 
 #[derive(Debug, PartialEq, Clone)]
