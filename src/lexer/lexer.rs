@@ -187,6 +187,8 @@ impl<'a> Lexer<'a> {
             '-' => {
                 if self.check_next('=') {
                     return Ok(TokenType::Operator(OperatorKind::MinusEqual))
+                } else if self.check_next('-') {
+                    return Ok(TokenType::Operator(OperatorKind::Decrement))
                 }
                 Ok(TokenType::Operations { raw: c, kind: OperationKind::Minus })
             },
