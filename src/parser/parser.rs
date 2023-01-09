@@ -279,6 +279,14 @@ impl Parser {
                     };
                     return Expr::Update(new_expr)
                 },
+                TokenType::Operator(OperatorKind::Decrement) => {
+                    let new_expr = UpdateExpr {
+                        name: identifier,
+                        op: TokenType::Operations { raw: '-', kind: OperationKind::Minus },
+                        change: Box::new(Expr::Literal(Literal::Integer(1)))
+                    };
+                    return Expr::Update(new_expr)
+                }
                 _ => {
                     panic!("Invalid operator")
                 }
