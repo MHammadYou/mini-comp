@@ -261,7 +261,10 @@ impl Parser {
     }
 
     fn parse_expr(&mut self) -> Expr {
-        if self.match_look_ahead(&[&TokenType::Operator(OperatorKind::Increment)]) {
+        if self.match_look_ahead(&[
+            &TokenType::Operator(OperatorKind::Increment),
+            &TokenType::Operator(OperatorKind::Decrement)
+            ]) {
             let ident = match self.peek() {
                 TokenType::Identifier(value) => value,
                 _ => String::from("Invalid")
@@ -668,7 +671,9 @@ impl Parser {
             if self.current + 1 >= self.tokens.len() {
                 return false
             } else {
-                return &&self.tokens[self.current + 1] == token_type
+                if &&self.tokens[self.current + 1] == token_type {
+                    return true
+                }
             }
         }
         false
