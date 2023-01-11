@@ -19,7 +19,8 @@ if (true) {
 let i = 0;
 while (i < 10) {
     print i;
-    i++;
+    i--;
+    i += 2;
 }
 
 for (let i = 0; i < 5; i += 1) {
