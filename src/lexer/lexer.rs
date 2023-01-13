@@ -140,6 +140,10 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    fn parse_single_comment(&mut self) -> Result<TokenType, LexerError> {
+        self.next_token()
+    }
+
     fn check_next(&mut self, next: char) -> bool {
         match self.chars.peek() {
             Some(c) => {
@@ -194,7 +198,12 @@ impl<'a> Lexer<'a> {
             },
 
             '*' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Star }),
-            '/' => Ok(TokenType::Operations { raw: c, kind: OperationKind::Slash }),
+            '/' => {
+                if self.check_next('/') {
+                    return self.parse_single_comment();
+                }
+                Ok(TokenType::Operations { raw: c, kind: OperationKind::Slash })
+            },
 
             '<' => {
                 if self.check_next('=') {
