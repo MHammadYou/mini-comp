@@ -1,5 +1,5 @@
 
-
+// A single line comment
 
 class Main {
     sayHello(name) {

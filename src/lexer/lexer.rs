@@ -141,6 +141,14 @@ impl<'a> Lexer<'a> {
     }
 
     fn parse_single_comment(&mut self) -> Result<TokenType, LexerError> {
+        
+        while let Some(c) = self.chars.peek() {
+            if c == &'\n' {
+                break;
+            }
+            self.chars.next();
+        }
+
         self.next_token()
     }
 
