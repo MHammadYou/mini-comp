@@ -1,5 +1,3 @@
-use std::fmt::Debug;
-
 pub mod lexer;
 
 extern crate thiserror;
@@ -86,7 +84,7 @@ pub enum PunctuationKind {
 }
 
 
-#[derive(PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     EOF,
     Punctuation { raw: char, kind: PunctuationKind },
@@ -97,20 +95,4 @@ pub enum TokenType {
     Numeric{ raw: String, hint: NumericHint },
     String(String),
     Terminal(String)
-}
-
-impl Debug for TokenType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::EOF => write!(f, "EOF"),
-            Self::Punctuation { raw, kind: _ } => write!(f, "{}", raw),
-            Self::Operations { raw, kind: _ } => write!(f, "{}", raw),
-            Self::Operator(arg0) => write!(f, "{:#?}", arg0),
-            Self::Identifier(arg0) => write!(f, "{}", arg0),
-            Self::Char(arg0) => write!(f, "{}", arg0),
-            Self::Numeric { raw, hint: _ } => write!(f, "{}", raw),
-            Self::String(arg0) => write!(f, "{}", arg0),
-            Self::Terminal(arg0) => write!(f, "{}", arg0),
-        }
-    }
 }
