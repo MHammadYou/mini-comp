@@ -152,6 +152,12 @@ impl<'a> Lexer<'a> {
         self.next_token()
     }
 
+    fn parse_block_comment(&mut self) -> Result<TokenType, LexerError> {
+        unimplemented!();
+
+        self.next_token()
+    }
+
     fn check_next(&mut self, next: char) -> bool {
         match self.chars.peek() {
             Some(c) => {
@@ -209,6 +215,8 @@ impl<'a> Lexer<'a> {
             '/' => {
                 if self.check_next('/') {
                     return self.parse_single_comment();
+                } else if self.check_next('*') {
+                    return self.parse_block_comment();
                 }
                 Ok(TokenType::Operations { raw: c, kind: OperationKind::Slash })
             },
