@@ -153,7 +153,18 @@ impl<'a> Lexer<'a> {
     }
 
     fn parse_block_comment(&mut self) -> Result<TokenType, LexerError> {
-        unimplemented!();
+        
+        while let Some(c) = self.chars.peek() {
+            if c == &'*' {
+                self.chars.next(); // consume the '*'
+                if self.check_next('/') {
+                    self.chars.next(); // consume the '/'
+                    break;
+                }
+                continue;
+            }
+            self.chars.next();
+        }
 
         self.next_token()
     }
