@@ -1,0 +1,9 @@
+
+
+// let keyword is used to indicate the variable declaration
+
+let string_var = "Hello, World!";   // str
+let float_var  = 12.45;             // float
+let int_var    = 45;                // int
+let bool_var   = true;              // bool (true | false)
+let nil_var    = nil;               // nil  (Null)
