@@ -1,0 +1,16 @@
+
+
+if (true) {
+    // If block
+}
+
+for (let i = 0; i < 5; i++) {
+    // for loop body
+}
+
+let i = 0;
+
+while (i < 10) {
+    // while loop body
+    i++;
+}
