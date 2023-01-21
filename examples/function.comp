@@ -1,0 +1,13 @@
+
+
+// def keyword is used to indicate function defination
+
+def function_name() {
+    // body
+}
+
+def add(x, y) {
+    return x + y;
+}
+
+add(3, 7);
