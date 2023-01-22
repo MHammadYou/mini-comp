@@ -1,0 +1,11 @@
+
+
+/* 
+    The 'print' keyword logs the value to the console.
+    print is not a built-in function,
+    instead is a statement similar to python2 
+*/
+
+print "Hello, World!";
+
+print 4 + 6;
