@@ -1,20 +1,16 @@
 use super::*;
-use crate::lexer::{ TokenType, OperationKind, PunctuationKind, NumericHint, OperatorKind };
+use crate::lexer::{NumericHint, OperationKind, OperatorKind, PunctuationKind, TokenType};
 use parser::expr::*;
 use stmt::Stmt;
 
-
 pub struct Parser {
     current: usize,
-    tokens: Vec<TokenType>
-} 
+    tokens: Vec<TokenType>,
+}
 
 impl Parser {
     pub fn new(tokens: Vec<TokenType>) -> Parser {
-        Parser {
-            current: 0,
-            tokens
-        }
+        Parser { current: 0, tokens }
     }
 
     pub fn parse_program(&mut self) -> Vec<Stmt> {
@@ -28,7 +24,6 @@ impl Parser {
     }
 
     fn parse_declaration(&mut self) -> Stmt {
-
         if self.match_type(&[&TokenType::Terminal(String::from("let"))]) {
             return self.let_declaration();
         }
@@ -45,10 +40,9 @@ impl Parser {
     }
 
     fn class_statement(&mut self) -> Stmt {
-
         let ident: String = match self.peek() {
             TokenType::Identifier(value) => value,
-            _ => String::from("Invalid")
+            _ => String::from("Invalid"),
         };
 
         let name = self.consume_unit(&TokenType::Identifier(ident), "Expected class name.");
@@ -56,45 +50,77 @@ impl Parser {
         let mut super_class = None;
 
         if self.match_type(&[&TokenType::Terminal(String::from("extends"))]) {
-
             let ident: String = match self.peek() {
                 TokenType::Identifier(value) => value,
-                _ => String::from("Invalid")
+                _ => String::from("Invalid"),
             };
 
             self.consume_unit(&TokenType::Identifier(ident), "Expected parent classname.");
             super_class = Some(Expr::Variable(self.previous()));
         }
 
-        self.consume_unit(&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }, "Expected '{' after class name.");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: '{',
+                kind: PunctuationKind::OpenCurly,
+            },
+            "Expected '{' after class name.",
+        );
 
         let mut methods = vec![];
 
-        while !self.check_type(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }) && !self.end_of_stream() {
+        while !self.check_type(&TokenType::Punctuation {
+            raw: '}',
+            kind: PunctuationKind::CloseCurly,
+        }) && !self.end_of_stream()
+        {
             methods.push(self.function_statement("method"));
         }
 
-        self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }, "Expected '}' after class body");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: '}',
+                kind: PunctuationKind::CloseCurly,
+            },
+            "Expected '}' after class body",
+        );
 
-        Stmt::Class { name, super_class, methods }
+        Stmt::Class {
+            name,
+            super_class,
+            methods,
+        }
     }
 
     fn let_declaration(&mut self) -> Stmt {
         let ident: String = match self.peek() {
             TokenType::Identifier(value) => value,
-            _ => String::from("Invalid")
+            _ => String::from("Invalid"),
         };
-        let name = self.consume_unit(&TokenType::Identifier(ident), "Expected variable name after let");
+        let name = self.consume_unit(
+            &TokenType::Identifier(ident),
+            "Expected variable name after let",
+        );
 
-        if self.match_type(&[&TokenType::Punctuation { raw: '=', kind: PunctuationKind::Equal }]) {
+        if self.match_type(&[&TokenType::Punctuation {
+            raw: '=',
+            kind: PunctuationKind::Equal,
+        }]) {
             let initilizer = self.parse_expr();
-            self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ; after expression");
-            return Stmt::Let { token: name, initilizer }
+            self.consume_unit(
+                &TokenType::Punctuation {
+                    raw: ';',
+                    kind: PunctuationKind::Separator,
+                },
+                "Expected ; after expression",
+            );
+            return Stmt::Let {
+                token: name,
+                initilizer,
+            };
         }
         panic!("Invalid syntax, Expected '=' after variable name")
-
     }
-
 
     fn parse_statement(&mut self) -> Stmt {
         if self.match_type(&[&TokenType::Terminal(String::from("print"))]) {
@@ -117,81 +143,131 @@ impl Parser {
             return self.return_statement();
         }
 
-        if self.match_type(&[&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }]) {
-            return Stmt::Block { statements: self.parse_block() }
+        if self.match_type(&[&TokenType::Punctuation {
+            raw: '{',
+            kind: PunctuationKind::OpenCurly,
+        }]) {
+            return Stmt::Block {
+                statements: self.parse_block(),
+            };
         }
 
         return self.expression_statement();
     }
 
     fn return_statement(&mut self) -> Stmt {
-
         let keyword = self.previous();
 
         let mut value = None;
 
-        if !self.check_type(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }) {
-            
+        if !self.check_type(&TokenType::Punctuation {
+            raw: ';',
+            kind: PunctuationKind::Separator,
+        }) {
             let expr = self.parse_expr();
 
             value = Some(expr);
         }
 
-        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ';' after return value");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ';',
+                kind: PunctuationKind::Separator,
+            },
+            "Expected ';' after return value",
+        );
 
         Stmt::Return { keyword, value }
-
     }
 
     fn function_statement(&mut self, kind: &str) -> Stmt {
-
         let ident: String = match self.peek() {
             TokenType::Identifier(value) => value,
-            _ => String::from("Invalid")
+            _ => String::from("Invalid"),
         };
 
-        let name = self.consume_unit(&TokenType::Identifier(ident), "Expected function name after def");
+        let name = self.consume_unit(
+            &TokenType::Identifier(ident),
+            "Expected function name after def",
+        );
 
-        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after function name");  
-        
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: '(',
+                kind: PunctuationKind::OpenParen,
+            },
+            "Expected '(' after function name",
+        );
+
         let mut parameters = vec![];
 
-        if !self.check_type(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }) {
-
+        if !self.check_type(&TokenType::Punctuation {
+            raw: ')',
+            kind: PunctuationKind::CloseParen,
+        }) {
             let ident: String = match self.peek() {
                 TokenType::Identifier(value) => value,
-                _ => String::from("Invalid")
+                _ => String::from("Invalid"),
             };
 
-            parameters.push(self.consume_unit(&TokenType::Identifier(ident), "Expected parameter after '('"));
+            parameters.push(self.consume_unit(
+                &TokenType::Identifier(ident),
+                "Expected parameter after '('",
+            ));
 
-            while self.match_type(&[&TokenType::Punctuation { raw: ',', kind: PunctuationKind::Comma }]) {
+            while self.match_type(&[&TokenType::Punctuation {
+                raw: ',',
+                kind: PunctuationKind::Comma,
+            }]) {
                 if parameters.len() >= 255 {
                     panic!("Can't have more than 255 parameters.");
                 }
 
                 let ident: String = match self.peek() {
                     TokenType::Identifier(value) => value,
-                    _ => String::from("Invalid")
+                    _ => String::from("Invalid"),
                 };
 
-                parameters.push(self.consume_unit(&TokenType::Identifier(ident), "Expected parameter after ','"));
-
-                }
+                parameters.push(self.consume_unit(
+                    &TokenType::Identifier(ident),
+                    "Expected parameter after ','",
+                ));
+            }
         }
 
-        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after for");    
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ')',
+                kind: PunctuationKind::CloseParen,
+            },
+            "Expected ')' after for",
+        );
 
-        self.consume_unit(&TokenType::Punctuation { raw: '{', kind: PunctuationKind::OpenCurly }, &format!("Expected '{{' before {} body.", kind));
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: '{',
+                kind: PunctuationKind::OpenCurly,
+            },
+            &format!("Expected '{{' before {} body.", kind),
+        );
 
         let body = self.parse_block();
 
-        Stmt::Function { name, params: parameters, body }
+        Stmt::Function {
+            name,
+            params: parameters,
+            body,
+        }
     }
 
     fn for_statement(&mut self) -> Stmt {
-
-        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after for");    
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: '(',
+                kind: PunctuationKind::OpenParen,
+            },
+            "Expected '(' after for",
+        );
 
         let initilizer;
         if self.match_type(&[&TokenType::Terminal(String::from("let"))]) {
@@ -201,67 +277,135 @@ impl Parser {
         }
 
         let _condition = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ';' after for loop condition");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ';',
+                kind: PunctuationKind::Separator,
+            },
+            "Expected ';' after for loop condition",
+        );
 
         let change = self.parse_expr();
 
-        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after for");    
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ')',
+                kind: PunctuationKind::CloseParen,
+            },
+            "Expected ')' after for",
+        );
 
         let mut body = self.parse_statement();
 
-        body = Stmt::Block { statements: vec![body, Stmt::Expression(change)] };
+        body = Stmt::Block {
+            statements: vec![body, Stmt::Expression(change)],
+        };
 
-        body = Stmt::While { condition: Expr::Literal(Literal::Boolean(true)), body: Box::new(body) };
+        body = Stmt::While {
+            condition: Expr::Literal(Literal::Boolean(true)),
+            body: Box::new(body),
+        };
 
-        body = Stmt::Block { statements: vec![initilizer, body] };
+        body = Stmt::Block {
+            statements: vec![initilizer, body],
+        };
 
         body
     }
 
     fn while_statement(&mut self) -> Stmt {
-        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after while");    
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: '(',
+                kind: PunctuationKind::OpenParen,
+            },
+            "Expected '(' after while",
+        );
         let condition = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after expression");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ')',
+                kind: PunctuationKind::CloseParen,
+            },
+            "Expected ')' after expression",
+        );
 
         let statment = self.parse_statement();
-        Stmt::While { condition, body: Box::new(statment) }
+        Stmt::While {
+            condition,
+            body: Box::new(statment),
+        }
     }
 
     fn if_statement(&mut self) -> Stmt {
-        self.consume_unit(&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }, "Expected '(' after if");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: '(',
+                kind: PunctuationKind::OpenParen,
+            },
+            "Expected '(' after if",
+        );
         let condition = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after expression");
-    
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ')',
+                kind: PunctuationKind::CloseParen,
+            },
+            "Expected ')' after expression",
+        );
+
         let branch = self.parse_statement();
 
-        Stmt::If { condition, branch: Box::new(branch) }
-        
+        Stmt::If {
+            condition,
+            branch: Box::new(branch),
+        }
     }
 
     fn parse_block(&mut self) -> Vec<Stmt> {
         let mut statements = vec![];
 
-        while !self.check_type(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }) && !self.end_of_stream() {
+        while !self.check_type(&TokenType::Punctuation {
+            raw: '}',
+            kind: PunctuationKind::CloseCurly,
+        }) && !self.end_of_stream()
+        {
             statements.push(self.parse_declaration());
         }
 
-        self.consume_unit(&TokenType::Punctuation { raw: '}', kind: PunctuationKind::CloseCurly }, 
-            "Expected '}' after block");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: '}',
+                kind: PunctuationKind::CloseCurly,
+            },
+            "Expected '}' after block",
+        );
 
         statements
     }
 
     fn print_statement(&mut self) -> Stmt {
         let expr = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ; after expresion");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ';',
+                kind: PunctuationKind::Separator,
+            },
+            "Expected ; after expresion",
+        );
 
         return Stmt::Print(expr);
-
     }
 
     fn expression_statement(&mut self) -> Stmt {
         let expr = self.parse_expr();
-        self.consume_unit(&TokenType::Punctuation { raw: ';', kind: PunctuationKind::Separator }, "Expected ; after expression");
+        self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ';',
+                kind: PunctuationKind::Separator,
+            },
+            "Expected ; after expression",
+        );
 
         return Stmt::Expression(expr);
     }
@@ -269,60 +413,75 @@ impl Parser {
     fn parse_expr(&mut self) -> Expr {
         if self.match_look_ahead(&[
             &TokenType::Operator(OperatorKind::Increment),
-            &TokenType::Operator(OperatorKind::Decrement)
-            ]) {
+            &TokenType::Operator(OperatorKind::Decrement),
+        ]) {
             let ident = match self.peek() {
                 TokenType::Identifier(value) => value,
-                _ => String::from("Invalid")
+                _ => String::from("Invalid"),
             };
 
-            let identifier = self.consume_unit(&TokenType::Identifier(ident), "Expected identifier.");
+            let identifier =
+                self.consume_unit(&TokenType::Identifier(ident), "Expected identifier.");
             let operator = self.advance();
 
             match operator {
                 TokenType::Operator(OperatorKind::Increment) => {
                     let new_expr = UpdateExpr {
                         name: identifier,
-                        op: TokenType::Operations { raw: '+', kind: OperationKind::Plus },
-                        change: Box::new(Expr::Literal(Literal::Integer(1)))
+                        op: TokenType::Operations {
+                            raw: '+',
+                            kind: OperationKind::Plus,
+                        },
+                        change: Box::new(Expr::Literal(Literal::Integer(1))),
                     };
-                    return Expr::Update(new_expr)
-                },
+                    return Expr::Update(new_expr);
+                }
                 TokenType::Operator(OperatorKind::Decrement) => {
                     let new_expr = UpdateExpr {
                         name: identifier,
-                        op: TokenType::Operations { raw: '-', kind: OperationKind::Minus },
-                        change: Box::new(Expr::Literal(Literal::Integer(1)))
+                        op: TokenType::Operations {
+                            raw: '-',
+                            kind: OperationKind::Minus,
+                        },
+                        change: Box::new(Expr::Literal(Literal::Integer(1))),
                     };
-                    return Expr::Update(new_expr)
+                    return Expr::Update(new_expr);
                 }
                 _ => {
                     panic!("Invalid operator")
                 }
             }
-
         }
         self.parse_assignment()
     }
 
     fn parse_assignment(&mut self) -> Expr {
-
         let expr = self.parse_equality();
 
-        if self.match_type(&[&TokenType::Punctuation { raw: '=', kind: PunctuationKind::Equal }]) {
+        if self.match_type(&[&TokenType::Punctuation {
+            raw: '=',
+            kind: PunctuationKind::Equal,
+        }]) {
             let value = self.parse_assignment();
 
             match expr {
                 Expr::Variable(ident_name) => {
                     let name = ident_name;
-                    let new_expr = AssignExpr{ name, value: Box::new(value) };
-                    return Expr::Assign(new_expr)
-                },
-                Expr::Get(get) => {
-                    let new_expr = SetExpr { object: get.object, name: get.name, value: Box::new(value) };
-                    return Expr::Set(new_expr)
+                    let new_expr = AssignExpr {
+                        name,
+                        value: Box::new(value),
+                    };
+                    return Expr::Assign(new_expr);
                 }
-                _ => ()
+                Expr::Get(get) => {
+                    let new_expr = SetExpr {
+                        object: get.object,
+                        name: get.name,
+                        value: Box::new(value),
+                    };
+                    return Expr::Set(new_expr);
+                }
+                _ => (),
             }
         } else if self.match_type(&[&TokenType::Operator(OperatorKind::PlusEqual)]) {
             let value = self.parse_assignment();
@@ -330,14 +489,17 @@ impl Parser {
             match expr {
                 Expr::Variable(ident_name) => {
                     let name = ident_name;
-                    let new_expr = UpdateExpr { 
-                        name, 
-                        op: TokenType::Operations { raw: '+', kind: OperationKind::Plus }, 
-                        change: Box::new(value) 
+                    let new_expr = UpdateExpr {
+                        name,
+                        op: TokenType::Operations {
+                            raw: '+',
+                            kind: OperationKind::Plus,
+                        },
+                        change: Box::new(value),
                     };
-                    return Expr::Update(new_expr)
-                },
-                _ => ()
+                    return Expr::Update(new_expr);
+                }
+                _ => (),
             }
         } else if self.match_type(&[&TokenType::Operator(OperatorKind::MinusEqual)]) {
             let value = self.parse_assignment();
@@ -345,18 +507,20 @@ impl Parser {
             match expr {
                 Expr::Variable(ident_name) => {
                     let name = ident_name;
-                    let new_expr = UpdateExpr { 
-                        name, 
-                        op: TokenType::Operations { raw: '-', kind: OperationKind::Minus }, 
-                        change: Box::new(value) 
+                    let new_expr = UpdateExpr {
+                        name,
+                        op: TokenType::Operations {
+                            raw: '-',
+                            kind: OperationKind::Minus,
+                        },
+                        change: Box::new(value),
                     };
-                    return Expr::Update(new_expr)
-                },
-                _ => ()
+                    return Expr::Update(new_expr);
+                }
+                _ => (),
             }
         }
         expr
-
     }
 
     fn parse_equality(&mut self) -> Expr {
@@ -364,16 +528,16 @@ impl Parser {
 
         while self.match_type(&[
             &TokenType::Operator(OperatorKind::BangEqual),
-            &TokenType::Operator(OperatorKind::EqualEqual)
+            &TokenType::Operator(OperatorKind::EqualEqual),
         ]) {
             let operator = self.previous();
 
             let right = self.parse_comparison();
 
-            let new_expr = BinaryExpr{
+            let new_expr = BinaryExpr {
                 left: Box::new(expr),
                 op: operator,
-                right: Box::new(right)
+                right: Box::new(right),
             };
 
             expr = Expr::BinaryExpr(new_expr)
@@ -395,10 +559,10 @@ impl Parser {
 
             let right = self.parse_term();
 
-            let new_expr = BinaryExpr{
+            let new_expr = BinaryExpr {
                 left: Box::new(expr),
                 op: operator,
-                right: Box::new(right)
+                right: Box::new(right),
             };
 
             expr = Expr::BinaryExpr(new_expr)
@@ -408,75 +572,86 @@ impl Parser {
     }
 
     fn parse_term(&mut self) -> Expr {
-
         let mut expr = self.parse_factor();
 
         while self.match_type(&[
-            &TokenType::Operations { raw: '+', kind: OperationKind::Plus }, 
-            &TokenType::Operations { raw: '-', kind: OperationKind::Minus }
-            ]) {
-
+            &TokenType::Operations {
+                raw: '+',
+                kind: OperationKind::Plus,
+            },
+            &TokenType::Operations {
+                raw: '-',
+                kind: OperationKind::Minus,
+            },
+        ]) {
             let operator = self.previous();
 
             let right = self.parse_factor();
 
-            let new_expr = BinaryExpr{
+            let new_expr = BinaryExpr {
                 left: Box::new(expr),
                 op: operator,
-                right: Box::new(right)
+                right: Box::new(right),
             };
 
             expr = Expr::BinaryExpr(new_expr)
-
         }
 
         expr
     }
 
     fn parse_factor(&mut self) -> Expr {
-
         let mut expr = self.parse_unary();
 
         while self.match_type(&[
-            &TokenType::Operations { raw: '*', kind: OperationKind::Star }, 
-            &TokenType::Operations { raw: '/', kind: OperationKind::Slash }
-            ]) {
-            
-                let operator = self.previous();
+            &TokenType::Operations {
+                raw: '*',
+                kind: OperationKind::Star,
+            },
+            &TokenType::Operations {
+                raw: '/',
+                kind: OperationKind::Slash,
+            },
+        ]) {
+            let operator = self.previous();
 
-                let right = self.parse_unary();
+            let right = self.parse_unary();
 
-                let new_expr = BinaryExpr{
-                    left: Box::new(expr),
-                    op: operator,
-                    right: Box::new(right)
-                };
+            let new_expr = BinaryExpr {
+                left: Box::new(expr),
+                op: operator,
+                right: Box::new(right),
+            };
 
-                expr = Expr::BinaryExpr(new_expr)
-            }
+            expr = Expr::BinaryExpr(new_expr)
+        }
 
         expr
     }
 
-
     fn parse_unary(&mut self) -> Expr {
-        
         if self.match_type(&[
-            &TokenType::Punctuation { raw: '!', kind: PunctuationKind::Bang }, 
-            &TokenType::Operations { raw: '-', kind: OperationKind::Minus }
-            ]) {
-                let operator = self.previous();
+            &TokenType::Punctuation {
+                raw: '!',
+                kind: PunctuationKind::Bang,
+            },
+            &TokenType::Operations {
+                raw: '-',
+                kind: OperationKind::Minus,
+            },
+        ]) {
+            let operator = self.previous();
 
-                let right = self.parse_unary();
+            let right = self.parse_unary();
 
-                let new_expr = UnaryExpr {
-                    op: operator,
-                    right: Box::new(right)
-                };
+            let new_expr = UnaryExpr {
+                op: operator,
+                right: Box::new(right),
+            };
 
-                return Expr::UnaryExpr(new_expr)
-            }
-        
+            return Expr::UnaryExpr(new_expr);
+        }
+
         self.parse_call()
     }
 
@@ -484,18 +659,29 @@ impl Parser {
         let mut expr = self.parse_literal();
 
         loop {
-            if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }]) {
+            if self.match_type(&[&TokenType::Punctuation {
+                raw: '(',
+                kind: PunctuationKind::OpenParen,
+            }]) {
                 expr = self.finish_call(expr);
-            } else if self.match_type(&[&TokenType::Punctuation { raw: '.', kind: PunctuationKind::Dot }]) {
+            } else if self.match_type(&[&TokenType::Punctuation {
+                raw: '.',
+                kind: PunctuationKind::Dot,
+            }]) {
                 let ident: String = match self.peek() {
                     TokenType::Identifier(value) => value,
-                    _ => String::from("Invalid")
+                    _ => String::from("Invalid"),
                 };
 
-                let name = self.consume_unit(&TokenType::Identifier(ident), "Expected property name after '.'");
-                expr = Expr::Get(GetExpr {object: Box::new(expr), name});
-            } 
-            else {
+                let name = self.consume_unit(
+                    &TokenType::Identifier(ident),
+                    "Expected property name after '.'",
+                );
+                expr = Expr::Get(GetExpr {
+                    object: Box::new(expr),
+                    name,
+                });
+            } else {
                 break;
             }
         }
@@ -504,42 +690,55 @@ impl Parser {
     }
 
     fn parse_literal(&mut self) -> Expr {
-
-
         /*
             Parse Terminals
         */
 
         if self.match_type(&[&TokenType::Terminal(String::from("true"))]) {
-            let expr = Literal::Terminal(Terminal{ value: Box::new("true")});
-            return Expr::Literal(expr)
+            let expr = Literal::Terminal(Terminal {
+                value: Box::new("true"),
+            });
+            return Expr::Literal(expr);
         }
 
         if self.match_type(&[&TokenType::Terminal(String::from("false"))]) {
-            let expr = Literal::Terminal(Terminal{ value: Box::new("false")});
-            return Expr::Literal(expr)
+            let expr = Literal::Terminal(Terminal {
+                value: Box::new("false"),
+            });
+            return Expr::Literal(expr);
         }
 
         if self.match_type(&[&TokenType::Terminal(String::from("nil"))]) {
-            let expr = Literal::Terminal(Terminal{ value: Box::new("nil")});
-            return Expr::Literal(expr)
+            let expr = Literal::Terminal(Terminal {
+                value: Box::new("nil"),
+            });
+            return Expr::Literal(expr);
         }
 
         if self.match_type(&[&TokenType::Terminal(String::from("this"))]) {
-            let expr = ThisExpr { keyword: self.previous() };
+            let expr = ThisExpr {
+                keyword: self.previous(),
+            };
             return Expr::This(expr);
         }
 
         if self.match_type(&[&TokenType::Terminal(String::from("super"))]) {
             let keyword = self.previous();
-            self.consume_unit(&TokenType::Punctuation { raw: '.', kind: PunctuationKind::Dot }, "Expected '.' after super keyword");
+            self.consume_unit(
+                &TokenType::Punctuation {
+                    raw: '.',
+                    kind: PunctuationKind::Dot,
+                },
+                "Expected '.' after super keyword",
+            );
 
             let ident = match self.peek() {
                 TokenType::Identifier(value) => value,
-                _ => String::from("Invalid")
+                _ => String::from("Invalid"),
             };
 
-            let method = self.consume_unit(&TokenType::Identifier(ident), "Expected superclass name.");
+            let method =
+                self.consume_unit(&TokenType::Identifier(ident), "Expected superclass name.");
 
             let new_expr = SuperExpr { keyword, method };
             return Expr::Super(new_expr);
@@ -547,32 +746,30 @@ impl Parser {
 
         let value = match self.peek() {
             TokenType::Identifier(value) => value,
-            _ => String::from("Invalid")
+            _ => String::from("Invalid"),
         };
 
         if self.match_type(&[&TokenType::Identifier(value)]) {
-            return Expr::Variable(self.previous())
+            return Expr::Variable(self.previous());
         }
-
 
         /*
             Parse Numerics
         */
 
         let hint = match self.peek() {
-                TokenType::Numeric { raw: _, hint } => hint,
-                _ => NumericHint::Any
+            TokenType::Numeric { raw: _, hint } => hint,
+            _ => NumericHint::Any,
         };
 
         if hint == NumericHint::Integer {
-
             let token = self.peek();
-            
+
             let value_str = match token {
                 TokenType::Numeric { raw, hint: _ } => raw,
-                _ => "Nil".to_string()
+                _ => "Nil".to_string(),
             };
- 
+
             let value = value_str.parse::<i32>().unwrap();
             let expr = Literal::Integer(value);
 
@@ -580,7 +777,6 @@ impl Parser {
 
             return Expr::Literal(expr);
         } else if hint == NumericHint::FloatingPoint {
-
             /*
                 Parse Floats
             */
@@ -589,7 +785,7 @@ impl Parser {
 
             let value_str = match token {
                 TokenType::Numeric { raw, hint: _ } => raw,
-                _ => "Nil".to_string()
+                _ => "Nil".to_string(),
             };
 
             let value: f64 = value_str.parse::<f64>().unwrap();
@@ -597,9 +793,8 @@ impl Parser {
 
             self.advance();
 
-            return Expr::Literal(expr)
+            return Expr::Literal(expr);
         }
-
 
         /*
             Parse Strings
@@ -609,39 +804,54 @@ impl Parser {
 
         let raw = match raw {
             TokenType::String(raw) => raw,
-            _ => "Nil".to_string()
+            _ => "Nil".to_string(),
         };
 
         if self.match_type(&[&TokenType::String(raw.clone())]) {
             let expr = Literal::String(String::from(raw));
-            return Expr::Literal(expr)
+            return Expr::Literal(expr);
         }
 
         /*
             Parse Grouping ()
         */
 
-        if self.match_type(&[&TokenType::Punctuation { raw: '(', kind: PunctuationKind::OpenParen }]) {
-
+        if self.match_type(&[&TokenType::Punctuation {
+            raw: '(',
+            kind: PunctuationKind::OpenParen,
+        }]) {
             let expr = self.parse_expr();
 
-            self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected )");
-            
-            let expr = Grouping { expr: Box::new(expr) };
-            return Expr::Grouping(expr)
+            self.consume_unit(
+                &TokenType::Punctuation {
+                    raw: ')',
+                    kind: PunctuationKind::CloseParen,
+                },
+                "Expected )",
+            );
+
+            let expr = Grouping {
+                expr: Box::new(expr),
+            };
+            return Expr::Grouping(expr);
         }
 
         panic!("Invalid Syntax, No literal match");
     }
 
-
     fn finish_call(&mut self, callee: Expr) -> Expr {
         let mut args = vec![];
 
-        if !self.check_type(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }) {
+        if !self.check_type(&TokenType::Punctuation {
+            raw: ')',
+            kind: PunctuationKind::CloseParen,
+        }) {
             args.push(self.parse_expr());
 
-            while self.match_type(&[&TokenType::Punctuation { raw: ',', kind: PunctuationKind::Comma }]) {
+            while self.match_type(&[&TokenType::Punctuation {
+                raw: ',',
+                kind: PunctuationKind::Comma,
+            }]) {
                 if args.len() >= 255 {
                     panic!("Can't have more than 255 arguments!");
                 }
@@ -649,11 +859,20 @@ impl Parser {
             }
         }
 
-        let paren = self.consume_unit(&TokenType::Punctuation { raw: ')', kind: PunctuationKind::CloseParen }, "Expected ')' after argument(s)");
-        let expr = CallExpr{ callee: Box::new(callee), paren, args};
+        let paren = self.consume_unit(
+            &TokenType::Punctuation {
+                raw: ')',
+                kind: PunctuationKind::CloseParen,
+            },
+            "Expected ')' after argument(s)",
+        );
+        let expr = CallExpr {
+            callee: Box::new(callee),
+            paren,
+            args,
+        };
         Expr::Call(expr)
     }
-
 
     fn consume_unit(&mut self, token_type: &TokenType, message: &str) -> TokenType {
         if self.check_type(token_type) {
@@ -670,15 +889,15 @@ impl Parser {
             }
         }
         return false;
-    } 
+    }
 
     fn match_look_ahead(&mut self, types: &[&TokenType]) -> bool {
         for token_type in types {
             if self.current + 1 >= self.tokens.len() {
-                return false
+                return false;
             } else {
                 if &&self.tokens[self.current + 1] == token_type {
-                    return true
+                    return true;
                 }
             }
         }
@@ -687,9 +906,9 @@ impl Parser {
 
     fn check_type(&mut self, token_type: &TokenType) -> bool {
         if self.end_of_stream() {
-            return false
-        } 
-        &self.peek() == token_type 
+            return false;
+        }
+        &self.peek() == token_type
     }
 
     fn advance(&mut self) -> TokenType {
