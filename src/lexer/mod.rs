@@ -12,25 +12,17 @@ pub enum LexerError {
     #[error("Expected {expected:?}, found {found:?}")]
     MissingExpectedSymbol {
         expected: &'static str,
-        found: Token
+        found: Token,
     },
 
     #[error("Can't find opening symbol for {symbol:?}")]
-    MissingBalancedSymbol {
-        symbol: char,
-        open: char
-    },
+    MissingBalancedSymbol { symbol: char, open: char },
 
     #[error("Can't create numeric literal due to invalid character {raw:?}")]
-    NumericLiteralInvalidChar {
-        raw: String,
-        invalid: char
-    },
+    NumericLiteralInvalidChar { raw: String, invalid: char },
 
     #[error("Unrecognized symbol")]
-    UnknownSymbol {
-        symbol: String
-    },
+    UnknownSymbol { symbol: String },
 }
 
 pub type Token = TokenType;
@@ -38,14 +30,14 @@ pub type Token = TokenType;
 #[derive(PartialEq)]
 pub struct Punctuation {
     pub raw: char,
-    pub kind: PunctuationKind
+    pub kind: PunctuationKind,
 }
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum NumericHint {
     Integer,
     FloatingPoint,
-    Any
+    Any,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -67,7 +59,7 @@ pub enum OperatorKind {
     PlusEqual,
     MinusEqual,
     Increment,
-    Decrement
+    Decrement,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -78,21 +70,20 @@ pub enum PunctuationKind {
     CloseCurly,
     Separator,
     Equal,
-    Bang, 
+    Bang,
     Comma,
-    Dot
+    Dot,
 }
-
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     EOF,
     Punctuation { raw: char, kind: PunctuationKind },
-    Operations{ raw: char, kind: OperationKind },
+    Operations { raw: char, kind: OperationKind },
     Operator(OperatorKind),
     Identifier(String),
     Char(char),
-    Numeric{ raw: String, hint: NumericHint },
+    Numeric { raw: String, hint: NumericHint },
     String(String),
-    Terminal(String)
+    Terminal(String),
 }
