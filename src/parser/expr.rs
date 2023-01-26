@@ -7,25 +7,23 @@ pub struct Program {
     pub expr: Expr,
 }
 
-
 #[derive(Debug)]
 pub enum Literal {
     Integer(i32),
     FloatingPoint(f64),
     String(String),
     Boolean(bool),
-    Terminal(Terminal)
+    Terminal(Terminal),
 }
 
 #[derive(Debug)]
 pub struct Terminal {
-    pub value: Box<dyn Any>
+    pub value: Box<dyn Any>,
 }
-
 
 #[derive(Debug)]
 pub struct Grouping {
-    pub expr: Box<Expr>
+    pub expr: Box<Expr>,
 }
 
 #[derive(Debug)]
@@ -34,58 +32,56 @@ pub struct UnaryExpr {
     pub right: Box<Expr>,
 }
 
-
 #[derive(Debug)]
 pub struct BinaryExpr {
     pub left: Box<Expr>,
     pub op: TokenType,
-    pub right: Box<Expr>
+    pub right: Box<Expr>,
 }
 
 #[derive(Debug)]
 pub struct AssignExpr {
     pub name: TokenType,
-    pub value: Box<Expr>
+    pub value: Box<Expr>,
 }
 
 #[derive(Debug)]
 pub struct UpdateExpr {
     pub name: TokenType,
     pub op: TokenType,
-    pub change: Box<Expr>
+    pub change: Box<Expr>,
 }
 
 #[derive(Debug)]
 pub struct CallExpr {
     pub callee: Box<Expr>,
     pub paren: TokenType,
-    pub args: Vec<Expr>
+    pub args: Vec<Expr>,
 }
 
 #[derive(Debug)]
 pub struct GetExpr {
     pub object: Box<Expr>,
-    pub name: TokenType
+    pub name: TokenType,
 }
 
 #[derive(Debug)]
 pub struct SetExpr {
     pub object: Box<Expr>,
     pub name: TokenType,
-    pub value: Box<Expr>
+    pub value: Box<Expr>,
 }
 
 #[derive(Debug)]
 pub struct ThisExpr {
-    pub keyword: TokenType
+    pub keyword: TokenType,
 }
 
 #[derive(Debug)]
 pub struct SuperExpr {
     pub keyword: TokenType,
-    pub method: TokenType
+    pub method: TokenType,
 }
-
 
 #[derive(Debug)]
 pub enum Expr {
@@ -100,7 +96,5 @@ pub enum Expr {
     Get(GetExpr),
     Set(SetExpr),
     This(ThisExpr),
-    Super(SuperExpr)
+    Super(SuperExpr),
 }
-
-
