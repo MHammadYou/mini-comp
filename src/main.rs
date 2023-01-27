@@ -8,7 +8,6 @@ use parser::parser::Parser;
 
 use clap::{App, SubCommand};
 fn main() -> std::io::Result<()> {
-
     let matches = App::new("MiniComp")
         .subcommand(SubCommand::with_name("debug").args_from_usage(
             "
@@ -24,7 +23,10 @@ fn main() -> std::io::Result<()> {
             let text = std::fs::read_to_string(filename)?;
             let lexer = Lexer::new(&text);
 
-            let shows = sub_matches.values_of("show").unwrap_or_default().collect::<Vec<&str>>();
+            let shows = sub_matches
+                .values_of("show")
+                .unwrap_or_default()
+                .collect::<Vec<&str>>();
             if shows.contains(&"tokens") {
                 let mut lexer = lexer.clone();
                 let tokens = lexer.get_tokens();
@@ -35,14 +37,14 @@ fn main() -> std::io::Result<()> {
             if shows.contains(&"ast") {
                 let mut lexer = lexer.clone();
                 let tokens = lexer.get_tokens();
-    
+
                 let mut parser = Parser::new(tokens);
                 let statements = parser.parse_program();
-                
+
                 println!("{:#?}", statements);
             }
-        },
-        _ => ()
+        }
+        _ => (),
     }
     Ok(())
 }
