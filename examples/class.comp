@@ -1,0 +1,13 @@
+
+
+class ClassName {
+    class_function() {
+        // Do Something
+    }
+}
+
+class BaseClass {}
+
+class ChildClass extends BaseClass {
+    // Child class
+}
