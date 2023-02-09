@@ -44,7 +44,7 @@ fn main() -> std::io::Result<()> {
                 println!("{:#?}", statements);
             }
         }
-        _ => (),
+        _ => ()
     }
     Ok(())
 }
