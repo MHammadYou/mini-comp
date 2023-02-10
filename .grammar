@@ -1,5 +1,3 @@
-
-
 program       = declaration* EOF
 
 declaration   = letDecl | 
