@@ -1,9 +1,9 @@
 program       -> declaration* EOF ;
 
-declaration   = letDecl | 
-                  defDecl | 
-                  classDecl | 
-                  statement 
+declaration   -> letDecl | 
+                   defDecl | 
+                   classDecl | 
+                   statement ;
 
 letDecl       = "let" IDENTIFIER ( "=" expression )? ";"
 defDecl       = "def" function
