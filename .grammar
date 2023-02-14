@@ -6,7 +6,7 @@ declaration   -> letDecl |
                    statement ;
 
 letDecl       -> "let" IDENTIFIER ( "=" expression )? ";" ;
-defDecl       = "def" function
+defDecl       -> "def" function ;
 classDecl     = "class" IDENTIFIER ( "extends" IDENTIFIER )?
                     "{" function* "}"
 
