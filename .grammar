@@ -7,8 +7,8 @@ declaration   -> letDecl |
 
 letDecl       -> "let" IDENTIFIER ( "=" expression )? ";" ;
 defDecl       -> "def" function ;
-classDecl     = "class" IDENTIFIER ( "extends" IDENTIFIER )?
-                    "{" function* "}"
+classDecl     -> "class" IDENTIFIER ( "extends" IDENTIFIER )?
+                    "{" function* "}" ;
 
 function      = IDENTIFIER "(" parameters? ")" block
 
