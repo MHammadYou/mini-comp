@@ -10,7 +10,7 @@ defDecl       -> "def" function ;
 classDecl     -> "class" IDENTIFIER ( "extends" IDENTIFIER )?
                     "{" function* "}" ;
 
-function      = IDENTIFIER "(" parameters? ")" block
+function      -> IDENTIFIER "(" parameters? ")" block ;
 
 parameters    = IDENTIFIER ( "," IDENTIFIER )* 
 
