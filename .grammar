@@ -11,8 +11,7 @@ classDecl     -> "class" IDENTIFIER ( "extends" IDENTIFIER )?
                     "{" function* "}" ;
 
 function      -> IDENTIFIER "(" parameters? ")" block ;
-
-parameters    = IDENTIFIER ( "," IDENTIFIER )* 
+parameters    -> IDENTIFIER ( "," IDENTIFIER )* ;
 
 statement     = exprStmt | 
                   printStmt |
