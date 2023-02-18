@@ -13,13 +13,13 @@ classDecl     -> "class" IDENTIFIER ( "extends" IDENTIFIER )?
 function      -> IDENTIFIER "(" parameters? ")" block ;
 parameters    -> IDENTIFIER ( "," IDENTIFIER )* ;
 
-statement     = exprStmt | 
+statement     -> exprStmt | 
                   printStmt |
                   block | 
                   ifStmt | 
                   whileStmt |
                   forStmt |
-                  returnStmt
+                  returnStmt ;
 
 block         = "{" declaration "}"
 
