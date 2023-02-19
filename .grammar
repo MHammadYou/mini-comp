@@ -21,7 +21,7 @@ statement     -> exprStmt |
                   forStmt |
                   returnStmt ;
 
-block         = "{" declaration "}"
+block         = "{" declaration "}" ;
 
 ifStmt        = "if" "(" statement ")" statement
 whileStmt     = "while" "(" expression ")" statement      
