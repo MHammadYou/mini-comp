@@ -25,7 +25,7 @@ block         -> "{" declaration "}" ;
 
 ifStmt        -> "if" "(" statement ")" statement ;
 whileStmt     -> "while" "(" expression ")" statement ;
-forStmt       = "for" "(" 
+forStmt       -> "for" "(" 
                   ( letDecl | exprStmt )
                    expression ";" 
                    expression ")" statement ; 
