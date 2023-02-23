@@ -29,7 +29,7 @@ forStmt       -> "for" "("
                   ( letDecl | exprStmt )
                    expression ";" 
                    expression ")" statement ; 
-returnStmt    = "return" expression? ";"  
+returnStmt    -> "return" expression? ";" ; 
 
 exprStmt      = expression ";"
 printStmt     = "print" expression ";"
