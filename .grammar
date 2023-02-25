@@ -32,7 +32,7 @@ forStmt       -> "for" "("
 returnStmt    -> "return" expression? ";" ; 
 
 exprStmt      -> expression ";" ;
-printStmt     = "print" expression ";"
+printStmt     -> "print" expression ";" ;
 
 expression    = assignment | compoundAssignment | increDecre
 
