@@ -34,7 +34,7 @@ returnStmt    -> "return" expression? ";" ;
 exprStmt      -> expression ";" ;
 printStmt     -> "print" expression ";" ;
 
-expression    = assignment | compoundAssignment | increDecre
+expression    -> assignment | compoundAssignment | increDecre ;
 
 assignment    = ( call "." )? IDENTIFIER "=" assignment | equality
 
