@@ -38,8 +38,8 @@ expression    -> assignment | compoundAssignment | increDecre ;
 
 assignment    -> ( call "." )? IDENTIFIER "=" assignment | equality ;
 
-compoundAssignment = IDENTIFIER ( "+=" | "-=" ) equality ";"
-increDecre    = IDENTIFIER ( "++" | "--" ) ";"
+compoundAssignment = IDENTIFIER ( "+=" | "-=" ) equality ";" ;
+increDecre    -> IDENTIFIER ( "++" | "--" ) ";" ;
 
 equality      = comparison ( ( "!=" | "==" ) comparison )*
 
