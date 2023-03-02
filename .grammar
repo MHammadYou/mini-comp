@@ -43,7 +43,7 @@ increDecre    -> IDENTIFIER ( "++" | "--" ) ";" ;
 
 equality      -> comparison ( ( "!=" | "==" ) comparison )* ;
 
-comparison    = term ( ( ">" | ">=" | "<" | "<=" ) term )*
+comparison    -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 
 term          = factor ( ( "-" | "+" ) factor )* 
 
