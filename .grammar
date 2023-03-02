@@ -45,7 +45,7 @@ equality      -> comparison ( ( "!=" | "==" ) comparison )* ;
 
 comparison    -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 
-term          = factor ( ( "-" | "+" ) factor )* 
+term          -> factor ( ( "-" | "+" ) factor )* ;
 
 factor        = unary ( ( "/" | "*" ) unary )* 
 
