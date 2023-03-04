@@ -34,11 +34,11 @@ returnStmt    -> "return" expression? ";" ;
 exprStmt      -> expression ";" ;
 printStmt     -> "print" expression ";" ;
 
-expression    -> assignment | compoundAssignment | increDecre ;
+expression    -> assignment | compound | increDecre ;
 
 assignment    -> ( call "." )? IDENTIFIER "=" assignment | equality ;
 
-compoundAssignment = IDENTIFIER ( "+=" | "-=" ) equality ";" ;
+compound      -> IDENTIFIER ( "+=" | "-=" ) equality ";" ;
 increDecre    -> IDENTIFIER ( "++" | "--" ) ";" ;
 
 equality      -> comparison ( ( "!=" | "==" ) comparison )* ;
@@ -49,15 +49,15 @@ term          -> factor ( ( "-" | "+" ) factor )* ;
 
 factor        -> unary ( ( "/" | "*" ) unary )* ;
 
-unary         = ( "!" | "-" ) unary 
-                  | call
+unary         -> ( "!" | "-" ) unary 
+                  | call ;
 
-call          = literal ( "(" arguments? ")" | "." IDENTIFIER )*
+call          -> literal ( "(" arguments? ")" | "." IDENTIFIER )* ;
 
-arguments     = expression ( "," expression )*
+arguments     -> expression ( "," expression )* ;
 
-literal       = NUMERIC | STRING | TERMINAL 
+literal       -> NUMERIC | STRING | TERMINAL 
                   | "this" | "true" | "false" | "this"
                   | "(" expression ")"
                   | IDENTIFIER
-                  | "super" "." IDENTIFIER
+                  | "super" "." IDENTIFIER ;
