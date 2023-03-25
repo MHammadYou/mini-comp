@@ -1,7 +1,7 @@
 pub mod lexer;
 pub mod token;
 
-pub use token::TokenType;
+pub use token::{TokenType, NumericHint, OperationKind, PunctuationKind, OperatorKind};
 
 extern crate thiserror;
 use thiserror::Error;
