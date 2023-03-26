@@ -26,6 +26,3 @@ pub enum LexerError {
     #[error("Unrecognized symbol")]
     UnknownSymbol { symbol: String },
 }
-
-pub type Token = TokenType;
-
