@@ -3,3 +3,4 @@ pub mod token;
 pub mod error;
 
 pub use token::{TokenType, NumericHint, OperationKind, PunctuationKind, OperatorKind};
+pub use error::LexerError;
