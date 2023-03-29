@@ -90,18 +90,18 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    pub fn get_tokens(&mut self) -> Vec<TokenType> {
+    pub fn get_tokens(&mut self) -> Result<Vec<TokenType>, LexerError> {
         let mut tokens = Vec::new();
 
         loop {
             match self.next_token() {
                 Ok(TokenType::EOF) => break tokens.push(TokenType::EOF),
                 Ok(token) => tokens.push(token),
-                Err(err) => println!("{}", err),
+                Err(err) => return Err(err),
             }
         }
 
-        tokens
+        Ok(tokens)
     }
 
     fn parse_numbers(&mut self, start: char) -> Result<TokenType, LexerError> {
@@ -121,7 +121,7 @@ impl<'a> Lexer<'a> {
                 hint = NumericHint::FloatingPoint;
             }
         } else {
-            println!("Compiler bug if this line hits");
+            eprintln!("Compiler bug if this line hits");
             return Err(LexerError::NumericLiteralInvalidChar {
                 raw,
                 invalid: start,
