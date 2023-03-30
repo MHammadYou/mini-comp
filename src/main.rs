@@ -36,12 +36,16 @@ fn main() -> std::io::Result<()> {
 
             if shows.contains(&"ast") {
                 let mut lexer = lexer.clone();
-                let tokens = lexer.get_tokens();
-
-                let mut parser = Parser::new(tokens);
-                let statements = parser.parse_program();
-
-                println!("{:#?}", statements);
+                match lexer.get_tokens() {
+                    Ok(tokens) => {
+                        let mut parser = Parser::new(tokens);
+                        let statements = parser.parse_program();
+                        println!("{:#?}", statements);
+                    }
+                    Err(err) => {
+                        eprintln!("{:#?}", err)
+                    }
+                }                
             }
         }
         _ => ()
