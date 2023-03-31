@@ -181,7 +181,7 @@ impl Parser {
     }
 
     fn function_statement(&mut self, kind: &str) -> Stmt {
-        let ident: String = match self.peek() {
+        let ident = match self.peek() {
             TokenType::Identifier(value) => value,
             _ => String::from("Invalid"),
         };
@@ -763,9 +763,8 @@ impl Parser {
         };
 
         if hint == NumericHint::Integer {
-            let token = self.peek();
-
-            let value_str = match token {
+            
+            let value_str = match self.peek() {
                 TokenType::Numeric { raw, hint: _ } => raw,
                 _ => "Nil".to_string(),
             };
@@ -774,16 +773,10 @@ impl Parser {
             let expr = Literal::Integer(value);
 
             self.advance();
-
             return Expr::Literal(expr);
         } else if hint == NumericHint::FloatingPoint {
-            /*
-                Parse Floats
-            */
 
-            let token = self.peek();
-
-            let value_str = match token {
+            let value_str = match self.peek() {
                 TokenType::Numeric { raw, hint: _ } => raw,
                 _ => "Nil".to_string(),
             };
@@ -792,7 +785,6 @@ impl Parser {
             let expr = Literal::FloatingPoint(value);
 
             self.advance();
-
             return Expr::Literal(expr);
         }
 
