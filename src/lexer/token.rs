@@ -37,7 +37,6 @@ pub enum OperationKind {
 pub enum NumericHint {
     Integer,
     FloatingPoint,
-    Any,
 }
 
 #[derive(PartialEq)]

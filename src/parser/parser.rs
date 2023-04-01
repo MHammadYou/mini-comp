@@ -759,14 +759,14 @@ impl Parser {
 
         let hint = match self.peek() {
             TokenType::Numeric { raw: _, hint } => hint,
-            _ => NumericHint::Any,
+            _ => unreachable!(),
         };
 
         if hint == NumericHint::Integer {
             
             let value_str = match self.peek() {
                 TokenType::Numeric { raw, hint: _ } => raw,
-                _ => "Nil".to_string(),
+                _ => panic!("Invalid raw value for integer type."),
             };
 
             let value = value_str.parse::<i32>().unwrap();
@@ -778,7 +778,7 @@ impl Parser {
 
             let value_str = match self.peek() {
                 TokenType::Numeric { raw, hint: _ } => raw,
-                _ => "Nil".to_string(),
+                _ => panic!("Invalid raw value for integer type."),
             };
 
             let value: f64 = value_str.parse::<f64>().unwrap();
