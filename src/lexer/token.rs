@@ -58,3 +58,19 @@ pub enum TokenType {
     String(String),
     Terminal(String),
 }
+
+impl TokenType {
+    pub fn is_string(&self) -> bool {
+        match self {
+            TokenType::String(_) => true,
+            _ => false
+        }
+    }
+
+    pub fn unwrap_string(&self) -> String {
+        match self {
+            TokenType::String(value) => value.clone(),
+            _ => panic!("Called unwrap_string on non-string type")
+        }
+    }
+}

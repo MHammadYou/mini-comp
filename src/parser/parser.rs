@@ -791,16 +791,10 @@ impl Parser {
         /*
             Parse Strings
         */
-
-        let raw = self.peek();
-
-        let raw = match raw {
-            TokenType::String(raw) => raw,
-            _ => "Nil".to_string(),
-        };
-
-        if self.match_type(&[&TokenType::String(raw.clone())]) {
-            let expr = Literal::String(String::from(raw));
+        
+        if self.peek().is_string() {
+            let value = self.advance().unwrap_string();
+            let expr = Literal::String(String::from(value));
             return Expr::Literal(expr);
         }
 
