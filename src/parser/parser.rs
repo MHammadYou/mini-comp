@@ -757,36 +757,56 @@ impl Parser {
             Parse Numerics
         */
 
-        let hint = match self.peek() {
-            TokenType::Numeric { raw: _, hint } => hint,
-            _ => unreachable!(),
-        };
+        match self.peek() {
+            TokenType::Numeric { raw, hint } => {
+                self.advance();
 
-        if hint == NumericHint::Integer {
-            
-            let value_str = match self.peek() {
-                TokenType::Numeric { raw, hint: _ } => raw,
-                _ => panic!("Invalid raw value for integer type."),
-            };
-
-            let value = value_str.parse::<i32>().unwrap();
-            let expr = Literal::Integer(value);
-
-            self.advance();
-            return Expr::Literal(expr);
-        } else if hint == NumericHint::FloatingPoint {
-
-            let value_str = match self.peek() {
-                TokenType::Numeric { raw, hint: _ } => raw,
-                _ => panic!("Invalid raw value for integer type."),
-            };
-
-            let value: f64 = value_str.parse::<f64>().unwrap();
-            let expr = Literal::FloatingPoint(value);
-
-            self.advance();
-            return Expr::Literal(expr);
+                match hint {
+                    NumericHint::Integer => {
+                        let value = raw.parse::<i32>().unwrap();
+                        let expr = Literal::Integer(value);
+                        return Expr::Literal(expr);
+                    },
+                    NumericHint::FloatingPoint => {
+                        let value = raw.parse::<f64>().unwrap();
+                        let expr = Literal::FloatingPoint(value);
+                        return Expr::Literal(expr);
+                    },
+                }
+            }
+            _ => ()
         }
+
+        // let hint = match self.peek() {
+        //     TokenType::Numeric { raw: _, hint } => hint,
+        //     _ => unreachable!(),
+        // };
+
+        // if hint == NumericHint::Integer {
+            
+        //     let value_str = match self.peek() {
+        //         TokenType::Numeric { raw, hint: _ } => raw,
+        //         _ => panic!("Invalid raw value for integer type."),
+        //     };
+
+        //     let value = value_str.parse::<i32>().unwrap();
+        //     let expr = Literal::Integer(value);
+
+        //     self.advance();
+        //     return Expr::Literal(expr);
+        // } else if hint == NumericHint::FloatingPoint {
+
+        //     let value_str = match self.peek() {
+        //         TokenType::Numeric { raw, hint: _ } => raw,
+        //         _ => panic!("Invalid raw value for integer type."),
+        //     };
+
+        //     let value: f64 = value_str.parse::<f64>().unwrap();
+        //     let expr = Literal::FloatingPoint(value);
+
+        //     self.advance();
+        //     return Expr::Literal(expr);
+        // }
 
         /*
             Parse Strings
